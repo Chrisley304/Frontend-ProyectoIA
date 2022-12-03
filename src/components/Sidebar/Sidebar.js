@@ -1,6 +1,5 @@
 import React from "react";
 import "./Sidebar.css"
-import {Text} from "@nextui-org/react";
 import {NavbarItem} from "../NavbarItem/NavbarItem"
 import "boxicons"
 
@@ -52,15 +51,15 @@ export const Sidebar = () =>{
                             iconType="solid"
                         />
                     </li>
+                    <li>
+                        <NavbarItem
+                            link="/configuracion"
+                            label="Configuración"
+                            icon="cog"
+                            iconType="solid"
+                        />
+                    </li>
                 </ul>
-            </div>
-            <div className="nav-item-config">
-                <NavbarItem
-                    link="/configuracion"
-                    label="Configuración"
-                    icon="cog"
-                    iconType="solid"
-                />
             </div>
         </aside>
     );

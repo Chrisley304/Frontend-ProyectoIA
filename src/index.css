@@ -5,15 +5,10 @@
 :root{
   --color-principal: #6532FF;
   --color-inactivo: #8D8D8D;
-  --background-color: #D9D9D9;
+  --background-color: #F8F9FC;
   --sidebar-color: white;
   --text-color: black;
 
   /* Transitions */
   --tran-general: all 0.3s ease;
 }
-
-/* code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-} */

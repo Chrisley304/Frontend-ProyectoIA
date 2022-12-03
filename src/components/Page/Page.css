@@ -5,3 +5,23 @@
     padding: 50px;
     overflow-y: scroll;
 }
+
+.titulo-seccion{
+  font-weight: 700;
+  font-size: 40px;
+  margin: 0;
+}
+
+.resaltar-texto{
+  color: var(--color-principal);
+}
+
+.descripcion-seccion{
+    color: var(--color-inactivo);
+    font-size: 18px;
+    font-weight: 500;
+}
+
+header{
+    margin-bottom: 50px;
+}
