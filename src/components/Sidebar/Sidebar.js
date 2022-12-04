@@ -1,16 +1,22 @@
 import React from "react";
 import "./Sidebar.css"
 import {NavbarItem} from "../NavbarItem/NavbarItem"
+import { Button } from "@nextui-org/react";
 import "boxicons"
 
-import logo from "../../assets/img/penguin.png"
+import logo from "../../assets/img/logoIA.png"
 
 export const Sidebar = () =>{
     return (
         <aside className="Sidebar">
             <div className="sidebar-top">
                 <div className="sidebar-close">
-                    <box-icon name="menu"></box-icon>
+                    <Button
+                        auto
+                        flat
+                        color="principal"
+                        icon={<box-icon name="menu"/>}
+                    />
                 </div>
                 <div className="sidebar-logo">
                     <img alt="Logo" src={logo} />

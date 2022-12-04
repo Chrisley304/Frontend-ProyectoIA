@@ -4,9 +4,9 @@ import {Page} from "../../components/Page/Page";
 
 export const PageNotFound = ()=>{
     return (
-    <Page>
+    <Page titulo="Error 404">
         <h2>
-        La página que solicitaste no existe.
+        La página que solicitaste no existe. 😭
         </h2>
     </Page>);
 }

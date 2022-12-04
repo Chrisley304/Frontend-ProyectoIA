@@ -10,6 +10,7 @@ function App() {
             <Sidebar />
             <Routes>
                 <Route path="/" element={<Dashboard />} />
+                <Route path="/reglas-asociacion" element={<Dashboard />} />
                 <Route path="*" element={<PageNotFound />} />
             </Routes>
         </BrowserRouter>

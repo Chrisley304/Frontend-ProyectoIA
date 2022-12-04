@@ -1,6 +1,6 @@
 import React from "react";
 import "./MenuUsuario.css"
-import { Avatar, Dropdown, User, Text } from "@nextui-org/react";
+import { Dropdown, User } from "@nextui-org/react";
 
 export const MenuUsuario = ()=>{
     return (

@@ -5,6 +5,10 @@ import {MenuUsuario} from "../MenuUsuario/MenuUsuario"
 
 
 export const Page = (props)=>{
+
+    let titulo = props.titulo;
+    let descripcion = props.descripcion;
+
     return (
         <section className="page-container">
             <header>
@@ -12,12 +16,10 @@ export const Page = (props)=>{
                     <Grid xs={8}>
                         <div>
                             <h1 className="titulo-seccion">
-                                Bienvenido <span className="resaltar-texto">Christian</span>
-                                !
+                                {titulo}
                             </h1>
                             <p className="descripcion-seccion">
-                                Aquí puedes obtener información general de tu paso por la
-                                aplicación.
+                                {descripcion}
                             </p>
                         </div>
                     </Grid>

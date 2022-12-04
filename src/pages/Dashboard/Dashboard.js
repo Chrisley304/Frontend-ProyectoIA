@@ -1,12 +1,15 @@
 import React from "react";
-// import { Card, Grid, Row, Text } from "@nextui-org/react";
+// import { Grid } from "@nextui-org/react";
 import {Page} from "../../components/Page/Page";
 
 export const Dashboard = ()=>{
+
     return (
-    <Page>
-        <div>
-        Hola
-        </div>
-    </Page>);
+        <Page
+            titulo="Reglas de asociacion"
+            descripcion="Aquí puedes obtener información general de tu paso por la aplicación."
+        >
+            
+        </Page>
+    );
 }
