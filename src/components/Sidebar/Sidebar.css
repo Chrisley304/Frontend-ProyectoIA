@@ -1,4 +1,3 @@
-
 .Sidebar{
     position: fixed;
     top: 0;
@@ -11,9 +10,19 @@
     z-index: 100;
 }
 
+.Sidebar.collapsed{
+    width: 100px;
+}
+.Sidebar.collapsed span{
+    display: none;
+}
+.Sidebar.collapsed .nextui-button-icon{
+    display: flex;
+}
+
 .sidebar-top{
     margin-top: 1rem;
-    margin-bottom: 5rem;
+    margin-bottom: 4rem;
 }
 
 .sidebar-logo{
@@ -34,12 +43,15 @@
 .sidebar-close{
     display: flex;
     justify-content: end;
+    margin-bottom: 25px;
 }
 
-.sidebar-close:hover{
-    display: flex;
-    justify-content: end;
-    
+.Sidebar.collapsed .sidebar-close{
+    justify-content: center;
+}
+
+.sidebar-close button:hover{
+    background-color: var(--color-hover);
 }
 
 .sidebar-content{
@@ -58,8 +70,18 @@
 
 /* Show/Hide animation */
 
-@keyframes hideMenu{
+/* @keyframes hideMenu{
     to{
         left: -100%;
     }
+} */
+
+/* Para ocultar cosas de los nav items */
+
+.Sidebar.collapsed .navbar-item-box{
+    padding: 0;
+    height: 40px;
+}
+.Sidebar.collapsed .navbar-item-box > box-icon{
+    padding-right: 0;
 }

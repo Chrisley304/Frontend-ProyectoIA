@@ -4,12 +4,19 @@
     height: 100vh;
     padding: 50px;
     overflow-y: scroll;
+    transition: var(--tran-general);
+
+}
+.page-container.side-bar-collapsed{
+    margin-left: 100px;
+    padding: 50px;
 }
 
 .titulo-seccion{
   font-weight: 700;
   font-size: 40px;
   margin: 0;
+  line-height: 40pt;
 }
 
 .resaltar-texto{

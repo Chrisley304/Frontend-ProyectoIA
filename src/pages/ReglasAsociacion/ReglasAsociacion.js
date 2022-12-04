@@ -7,7 +7,7 @@ export const ReglasAsociacion = () => {
     return (
         <Page
             titulo="Reglas de asociacion"
-            descripcion="Aquí puedes obtener información general de tu paso por la aplicación."
+            descripcion="En esta sección de la app puedes obtener las reglas de asociacion de un dataset que ingreses en CSV."
         >
             
         </Page>

@@ -4,6 +4,11 @@ import {Sidebar} from "./components/Sidebar/Sidebar"
 import {Dashboard} from "./pages/Dashboard/Dashboard"
 import {PageNotFound} from "./pages/PageNotFound/PageNotFound"
 import {ReglasAsociacion} from "./pages/ReglasAsociacion/ReglasAsociacion"
+import { createGlobalState } from "react-hooks-global-state";
+
+export const { useGlobalState } = createGlobalState({
+    navBarCollapsed: false
+});
 
 function App() {
     return (

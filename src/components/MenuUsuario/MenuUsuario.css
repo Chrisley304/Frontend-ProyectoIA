@@ -8,3 +8,9 @@
     font-size: 18px;
 }
 
+.dropdown-trigger-button{
+    display: flex;
+    align-items: center;
+    /* align-content: center; */
+    cursor: pointer;
+}

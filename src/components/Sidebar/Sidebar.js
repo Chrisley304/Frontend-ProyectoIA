@@ -3,12 +3,21 @@ import "./Sidebar.css"
 import {NavbarItem} from "../NavbarItem/NavbarItem"
 import { Button } from "@nextui-org/react";
 import "boxicons"
-
 import logo from "../../assets/img/logoIA.png"
+import { useGlobalState } from "../../App";
 
 export const Sidebar = () =>{
+
+    const [navBarCollapsed, setNavBarCollapsed] =
+        useGlobalState("navBarCollapsed");
+        
+    const handleNavbarCollapse = () => {
+        // console.log(navBarCollapsed);
+        setNavBarCollapsed(!navBarCollapsed);
+    };
+
     return (
-        <aside className="Sidebar">
+        <aside className={navBarCollapsed?"Sidebar collapsed": "Sidebar"}>
             <div className="sidebar-top">
                 <div className="sidebar-close">
                     <Button
@@ -16,6 +25,7 @@ export const Sidebar = () =>{
                         flat
                         color="principal"
                         icon={<box-icon name="menu"/>}
+                        onPress={handleNavbarCollapse}
                     />
                 </div>
                 <div className="sidebar-logo">
