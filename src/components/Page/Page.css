@@ -32,3 +32,18 @@
 header{
     margin-bottom: 50px;
 }
+
+@media (max-width: 991px) { 
+  /* En mobile, se invierte, en  */
+  .page-container, .page-container.side-bar-collapsed{
+    margin-left: 0px;
+    padding: 30px;
+    padding-top: 80px;
+    height: 100%;
+  }
+  /* .page-container{
+  }
+  .page-container.side-bar-collapsed{
+
+  } */
+}

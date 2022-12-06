@@ -5,6 +5,7 @@ import { Button } from "@nextui-org/react";
 import "boxicons"
 import logo from "../../assets/img/logoIA.png"
 import { useGlobalState } from "../../App";
+import { NavLink } from "react-router-dom";
 
 export const Sidebar = () =>{
 
@@ -17,14 +18,14 @@ export const Sidebar = () =>{
     };
 
     return (
-        <aside className={navBarCollapsed?"Sidebar collapsed": "Sidebar"}>
+        <aside className={navBarCollapsed ? "Sidebar collapsed" : "Sidebar"}>
             <div className="sidebar-top">
                 <div className="sidebar-close">
                     <Button
                         auto
                         flat
                         color="principal"
-                        icon={<box-icon name="menu"/>}
+                        icon={<box-icon name="menu" />}
                         onPress={handleNavbarCollapse}
                     />
                 </div>

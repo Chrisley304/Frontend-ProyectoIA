@@ -27,8 +27,15 @@
 
 .sidebar-logo{
     display: flex;
+    color: var(--color-texto);
     justify-content: center;
     align-items: center;
+}
+
+.sidebar-logo.active, .sidebar-logo.active:hover{
+    background-color: transparent;
+    font-weight: 500;
+    color: var(--color-texto);
 }
 
 .sidebar-logo img{
@@ -85,3 +92,70 @@
 .Sidebar.collapsed .navbar-item-box > box-icon{
     padding-right: 0;
 }
+
+/* Media querys  xs */
+@media (max-width: 991px) {
+    
+    .Sidebar{
+        position: absolute;
+        left: -1000px;
+        transition: var(--tran-general);
+    }
+    
+    .sidebar-close{
+        position: fixed;
+        left: 30px;
+    }
+    .Sidebar.collapsed .sidebar-close{
+        position: sticky;
+        top: 0;
+        left: 30px;
+    }
+
+    /* Aquí para evitar hacer relajos con mi JS, el collapsed sera = a cuando quieres mostrar el menú */
+    .Sidebar.collapsed{
+        left: 0;
+        width: 250px;
+        position: fixed;
+        height: 100%;
+        z-index: 10000;
+    }
+    .Sidebar.collapsed span{
+        display: block;
+    }
+    .Sidebar span{
+        display: none;
+    }
+    .Sidebar .nextui-button-icon{
+        display: flex;
+    }
+    .Sidebar.collapsed .navbar-item-box{
+        padding: 25px;
+        height: 40px;
+    }
+    .Sidebar.collapsed .navbar-item-box > box-icon {
+        padding-right: 10px;
+    }
+
+    .nextui-user-info{
+        display: none;
+    }
+}
+
+/* Media querys  sm */
+@media (min-width: 575px) { 
+
+}
+
+/*
+// Medium devices (tablets, 768px and up)
+@media (min-width: 768px) { ... }
+
+// Large devices (desktops, 992px and up)
+@media (min-width: 992px) { ... }
+
+// X-Large devices (large desktops, 1200px and up)
+@media (min-width: 1200px) { ... }
+
+// XX-Large devices (larger desktops, 1400px and up)
+@media (min-width: 1400px) { ... } */
