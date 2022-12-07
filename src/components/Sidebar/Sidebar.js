@@ -5,7 +5,6 @@ import { Button } from "@nextui-org/react";
 import "boxicons"
 import logo from "../../assets/img/logoIA.png"
 import { useGlobalState } from "../../App";
-import { NavLink } from "react-router-dom";
 
 export const Sidebar = () =>{
 
@@ -31,7 +30,7 @@ export const Sidebar = () =>{
                 </div>
                 <div className="sidebar-logo">
                     <img alt="Logo" src={logo} />
-                    <span>Proyecto IA</span>
+                    <span>Algorithmia</span>
                 </div>
             </div>
             <div className="sidebar-content">
