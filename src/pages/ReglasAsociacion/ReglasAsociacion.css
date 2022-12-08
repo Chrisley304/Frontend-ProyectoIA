@@ -1,3 +1,9 @@
 .boton-archivo input:hover{
     cursor: pointer !important;
 }
+
+.entry-table-container{
+    height: 60vh;
+    overflow-x: scroll;
+    overflow-y: scroll;
+}
