@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Page } from "../../components/Page/Page";
 import { Input, Button, Grid, Card, Text, Progress } from "@nextui-org/react";
-import "./ReglasAsociacion.css";
+import "./MetricasDistancia.css";
 import { useRef } from "react";
 import Papa from "papaparse";
 // import DataTable from "react-data-table-component";
@@ -16,7 +16,7 @@ import { LoadingModal } from "../../components/LoadingModal/LoadingModal";
 // Para usar la API de Heroku:
 const API = process.env.REACT_APP_API_URL;
 
-export const ReglasAsociacion = () => {
+export const MetricasDistancia = () => {
     // Para el label del file
     const [filenameLabel, setFilenameLabel] = useState("");
     const [soporteMinimo, setSoporteMinimo] = useState();
@@ -77,15 +77,15 @@ export const ReglasAsociacion = () => {
         });
         const infoRes = await res.json();
         // console.log(infoRes);
-        if (!("error" in infoRes)) {
+        if (!('error' in infoRes)){
             const csvFile = infoRes["csv"];
             setRespuestaNReglas(infoRes["nReglas"]);
 
             const parsedCsv = Papa.parse(csvFile, { header: true });
             const parsedData = parsedCsv?.data;
             var tableHeaders = [];
-            var arrayHead = Object.keys(parsedData[0]);
-            for (var i in arrayHead) {
+            var arrayHead= Object.keys(parsedData[0]);
+            for(var i in arrayHead){
                 tableHeaders.push({
                     key: arrayHead[i],
                     label: arrayHead[i].toUpperCase(),
@@ -95,8 +95,8 @@ export const ReglasAsociacion = () => {
             // console.log(parsedData);
             setDataTable(parsedData);
             setHeaderTable(tableHeaders);
-        } else {
-            setTextoError(infoRes["error"]);
+        }else{
+            setTextoError(infoRes['error']);
             setErrorRespuesta(true);
         }
         setIsLoading(false);
@@ -199,9 +199,7 @@ export const ReglasAsociacion = () => {
                                     <ModalError textoError={textoError} />
                                 ) : respuestaNReglas === -1 ? (
                                     <div className="waiting-container">
-                                        <Text css={{ pb: "$10" }}>
-                                            Esperando entrada...
-                                        </Text>
+                                        <Text css={{pb:"$10"}}>Esperando entrada...</Text>
                                         <Progress
                                             indeterminated
                                             value={50}

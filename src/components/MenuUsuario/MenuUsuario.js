@@ -2,6 +2,7 @@ import React from "react";
 import "./MenuUsuario.css"
 import { Dropdown, User } from "@nextui-org/react";
 import 'boxicons'
+import imagenChris from "../../assets/img/FondoRocas.png"
 
 export const MenuUsuario = ()=>{
     return (
@@ -17,7 +18,7 @@ export const MenuUsuario = ()=>{
                             color="primary"
                             name="Christian Leyva"
                             // description="chris@chrisley.dev"
-                            src="https://i.pravatar.cc/150?u=a042581f4e29026024d"
+                            src={imagenChris}
                         />
                         <box-icon name="chevron-down"></box-icon>
                     </div>
