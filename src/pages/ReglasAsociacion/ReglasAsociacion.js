@@ -94,6 +94,7 @@ export const ReglasAsociacion = () => {
             setHeaderTable(tableHeaders);
         }else{
             setTextoError(infoRes['error']);
+            setErrorRespuesta(true);
         }
         
     };

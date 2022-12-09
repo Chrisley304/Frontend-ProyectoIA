@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal, Button, Text, Input, Row, Checkbox } from "@nextui-org/react";
+import { Modal, Button, Text, Row } from "@nextui-org/react";
 
 export const ModalError = ({ textoError }) => {
     const [visible, setVisible] = React.useState(true);
