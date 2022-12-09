@@ -41,6 +41,11 @@ header{
     padding-top: 80px;
     height: 100%;
   }
+  /* Se oculta el nombre del usuario */
+  .nextui-user-info{
+    display: none;
+  }
+
   /* .page-container{
   }
   .page-container.side-bar-collapsed{
