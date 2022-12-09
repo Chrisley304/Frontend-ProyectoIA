@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-// import { Grid } from "@nextui-org/react";
 import { Page } from "../../components/Page/Page";
-import { Input, Button, Grid } from "@nextui-org/react";
+import { Input, Button, Grid, Card, Text } from "@nextui-org/react";
 import "./ReglasAsociacion.css";
 import { useRef } from "react";
 import Papa from "papaparse";
 // import DataTable from "react-data-table-component";
-import { CsvToHtmlTable } from "react-csv-to-table";
+// import { CsvToHtmlTable } from "react-csv-to-table";
+// import { TablaAsociacion } from "../../components/TablaAsociacion/TablaAsociacion";
+import { ModalError } from "../../components/ModalError/ModalError";
+import { TablaAsociacion } from "../../components/TablaAsociacion/TablaAsociacion";
 
 // Para utilizar el LOCALHOST:
 // const API = process.env.REACT_APP_LOCALHOST;
@@ -19,48 +21,26 @@ export const ReglasAsociacion = () => {
     const [soporteMinimo, setSoporteMinimo] = useState();
     const [confianzaMinima, setConfianzaMinima] = useState();
     const [elevacionMinima, setElevacionMinima] = useState();
-    const [csvEntryData, setCsvEntryData] = useState([]);
-    const [csvEntryCols, setCsvEntryCols] = useState([]);
-    const [csvInfo, setCsvInfo] = useState();
-    const [csvFile, setCsvFile] = useState();
+    const [respuestaNReglas, setRespuestaNReglas] = useState(-1);
+    const [errorRespuesta, setErrorRespuesta] = useState(false);
+    const [textoError, setTextoError] = useState("");
+    const [dataTable, setDataTable] = useState();
+    const [headerTable, setHeaderTable] = useState();
 
     // Reference for the invisible file input, to modify the beauty one
     const inputFile = useRef(null);
     // Reference for the form
     const form = useRef(null);
 
-    // const createColumns = (array) =>{
-    //     array.map( (item) => {        
-    //     employees.accounting.push({ 
-    //             "firstName" : item.firstName,
-    //             "lastName"  : item.lastName,
-    //             "age"       : item.age 
-    //         });
-    //     });
-    // };
-
     const selectFile = () => {
         inputFile.current.click();
     };
     const handleFileInput = (e) => {
-        const files = console.log(e.target.files);
-        console.log("files:", files);
         var filepath = inputFile.current.value.split("\\");
         var filename = filepath[filepath.length - 1];
         setFilenameLabel(filename);
-
-        if (validateFileExt(filename)) {
-            const reader = new FileReader();
-            reader.onload = async ({ target }) => {
-                setCsvFile(target.result);
-                const csv = Papa.parse(target.result, { header: true });
-                const parsedData = csv?.data;
-                setCsvEntryCols(Object.keys(parsedData[0]));
-                setCsvEntryData(parsedData);
-            };
-            reader.readAsText(e.target.files[0]);
-        }
     };
+
     const validateFileExt = (value) => {
         return value.match(/.\.csv$/);
     };
@@ -93,12 +73,30 @@ export const ReglasAsociacion = () => {
             body: formData,
         });
         const infoRes = await res.json();
-        // console.log(infoRes["csv"]);
-        // console.log(infoRes);
-    };
+        console.log(infoRes);
+        if (!('error' in infoRes)){
+            const csvFile = infoRes["csv"];
+            setRespuestaNReglas(infoRes["nReglas"]);
 
-    // console.log(csvInfo);
-    console.log(csvEntryData);
+            const parsedCsv = Papa.parse(csvFile, { header: true });
+            const parsedData = parsedCsv?.data;
+            var tableHeaders = [];
+            var arrayHead= Object.keys(parsedData[0]);
+            for(var i in arrayHead){
+                tableHeaders.push({
+                    key: arrayHead[i],
+                    label: arrayHead[i].toUpperCase(),
+                });
+            }
+            console.log(tableHeaders);
+            console.log(parsedData);
+            setDataTable(parsedData);
+            setHeaderTable(tableHeaders);
+        }else{
+            setTextoError(infoRes['error']);
+        }
+        
+    };
 
     return (
         <Page
@@ -185,17 +183,40 @@ export const ReglasAsociacion = () => {
                     </form>
                 </Grid>
                 <Grid xs={12} sm={6}>
-                    <div className="entry-table-container">
+                    <div className="resultados-container">
+                        <Card
+                            className="card-resultados"
+                            css={{ h: "100%", overflow: "scroll" }}
+                        >
+                            <Card.Body className="card-resultados-body">
+                                <Text h3>Resultados:</Text>
+                                {errorRespuesta ? (
+                                    <ModalError textoError={textoError} />
+                                ) : respuestaNReglas === -1 ? (
+                                    <div>Esperando entrada</div>
+                                ) : respuestaNReglas > 0 ? (
+                                    <div>
+                                        <Text>
+                                            Reglas generadas: {respuestaNReglas}
+                                        </Text>
+                                        <TablaAsociacion data={dataTable} cols={headerTable}/>
+                                    </div>
+                                ) : (
+                                    <ModalError textoError="El archivo .csv ingresado no es compatible con el algoritmo de asociacion. Ingresa un .csv valido e intenta de nuevo." />
+                                )}
+                            </Card.Body>
+                        </Card>
                         {/* <DataTable
                             columns={csvEntryCols}
                             data={csvEntryData}
                         /> */}
-                        <CsvToHtmlTable
+                        {/* <CsvToHtmlTable
                             data={csvFile}
                             csvDelimiter=","
                             hasHeader={false}
                             tableClassName="table table-striped table-hover"
-                        />
+                        /> */}
+                        {/* <TablaAsociacion data={csvEntryData}/> */}
                     </div>
                 </Grid>
             </Grid.Container>
