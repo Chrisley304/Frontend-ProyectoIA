@@ -13,9 +13,9 @@ import { LoadingModal } from "../../components/LoadingModal/LoadingModal";
 import { GraficaAsociacion } from "../../components/GraficaAsociacion/GraficaAsociacion";
 
 // Para utilizar el LOCALHOST:
-const API = process.env.REACT_APP_LOCALHOST;
+// const API = process.env.REACT_APP_LOCALHOST;
 // Para usar la API de Heroku:
-// const API = process.env.REACT_APP_API_URL;
+const API = process.env.REACT_APP_API_URL;
 
 export const Clustering = () => {
     // Para el label del file
