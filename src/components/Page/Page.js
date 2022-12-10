@@ -24,13 +24,13 @@ export const Page = (props)=>{
         >
             <header>
                 <Grid.Container gap={0}>
-                    <Grid xs={10} sm={8}>
+                    <Grid xs={9} sm={8}>
                         <div>
                             <h1 className="titulo-seccion">{titulo}</h1>
                             <p className="descripcion-seccion">{descripcion}</p>
                         </div>
                     </Grid>
-                    <Grid xs={2} sm={4} justify="flex-end" alignItems="top">
+                    <Grid xs={3} sm={4} justify="flex-end" alignItems="top">
                         <MenuUsuario />
                     </Grid>
                 </Grid.Container>

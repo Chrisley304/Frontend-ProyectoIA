@@ -1,8 +1,8 @@
 import React from "react";
 import "./MenuUsuario.css"
-import { Dropdown, User } from "@nextui-org/react";
+import { Dropdown } from "@nextui-org/react";
 import 'boxicons'
-import imagenChris from "../../assets/img/FondoRocas.png"
+import { Usuario } from "../Usuario/Usuario";
 
 export const MenuUsuario = ()=>{
     return (
@@ -10,17 +10,7 @@ export const MenuUsuario = ()=>{
             <Dropdown>
                 <Dropdown.Trigger>
                     <div className="dropdown-trigger-button">
-                        <User
-                            zoomed
-                            pointer
-                            as="button"
-                            size="lg"
-                            color="primary"
-                            name="Christian Leyva"
-                            // description="chris@chrisley.dev"
-                            src={imagenChris}
-                        />
-                        <box-icon name="chevron-down"></box-icon>
+                        <Usuario nombreUsuario={"Christian Leyva"}/>
                     </div>
                 </Dropdown.Trigger>
                 <Dropdown.Menu color="primary" aria-label="User Actions">

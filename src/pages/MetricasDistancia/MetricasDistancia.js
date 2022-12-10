@@ -108,7 +108,7 @@ export const MetricasDistancia = () => {
             descripcion="En esta sección de la app puedes obtener las metricas de distancia de un dataset que ingreses en CSV, utilizando el algoritmo que desees."
         >
             <Grid.Container gap={2}>
-                <Grid xs={12} sm={6}>
+                <Grid xs={12} sm={4}>
                     <form ref={form} onSubmit={handleSubmit}>
                         <Grid.Container gap={2}>
                             <Grid xs={12}>
@@ -121,7 +121,6 @@ export const MetricasDistancia = () => {
                                 ></input>
                                 <Input
                                     readOnly
-                                    width="350px"
                                     labelLeft="Archivo"
                                     className="boton-archivo"
                                     initialValue={filenameLabel}
@@ -187,19 +186,29 @@ export const MetricasDistancia = () => {
                     </form>
                 </Grid>
                 <LoadingModal visible={isLoading} />
-                <Grid xs={12} sm={6}>
+                {/* Si hay un error, se muestra el modal de error */}
+                {errorRespuesta && <ModalError textoError={textoError} />}
+                {/* Si no se generaron reglas, se muestra el error */}
+                {respuestaNReglas === 0 && (
+                    <ModalError textoError="La configuración ingresada no genero ninguna regla de asociación. Actualiza los valores e intenta de nuevo." />
+                )}
+                <Grid xs={12} sm={8}>
                     <div className="resultados-container">
                         <Card
                             className="card-resultados"
-                            css={{ h: "100%", overflow: "scroll" }}
+                            css={{
+                                maxHeight: "700px",
+                                h: "100%",
+                                overflow: "scroll",
+                            }}
                         >
                             <Card.Body className="card-resultados-body">
-                                <Text h3>Resultados:</Text>
-                                {errorRespuesta ? (
-                                    <ModalError textoError={textoError} />
-                                ) : respuestaNReglas === -1 ? (
+                                <Text h3>Frecuencia de los elementos:</Text>
+                                {respuestaNReglas <= 0 ? (
                                     <div className="waiting-container">
-                                        <Text css={{pb:"$10"}}>Esperando entrada...</Text>
+                                        <Text css={{ pb: "$10" }}>
+                                            Esperando entrada...
+                                        </Text>
                                         <Progress
                                             indeterminated
                                             value={50}
@@ -207,32 +216,20 @@ export const MetricasDistancia = () => {
                                             status="secondary"
                                         />
                                     </div>
-                                ) : respuestaNReglas > 0 ? (
+                                ) : (
                                     <div>
                                         <Text>
-                                            Reglas generadas: {respuestaNReglas}
+                                            Se generaron{" "}
+                                            <b>{respuestaNReglas}</b> reglas:
                                         </Text>
                                         <TablaAsociacion
                                             data={dataTable}
                                             cols={headerTable}
                                         />
                                     </div>
-                                ) : (
-                                    <ModalError textoError="La configuración ingresada no genero ninguna regla de asociación. Actualiza los valores e intenta de nuevo." />
                                 )}
                             </Card.Body>
                         </Card>
-                        {/* <DataTable
-                            columns={csvEntryCols}
-                            data={csvEntryData}
-                        /> */}
-                        {/* <CsvToHtmlTable
-                            data={csvFile}
-                            csvDelimiter=","
-                            hasHeader={false}
-                            tableClassName="table table-striped table-hover"
-                        /> */}
-                        {/* <TablaAsociacion data={csvEntryData}/> */}
                     </div>
                 </Grid>
             </Grid.Container>
