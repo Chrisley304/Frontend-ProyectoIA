@@ -13,9 +13,9 @@ import { TablaAsociacion } from "../../components/TablaAsociacion/TablaAsociacio
 import { LoadingModal } from "../../components/LoadingModal/LoadingModal";
 
 // Para utilizar el LOCALHOST:
-const API = process.env.REACT_APP_LOCALHOST;
+// const API = process.env.REACT_APP_LOCALHOST;
 // Para usar la API de Heroku:
-// const API = process.env.REACT_APP_API_URL;
+const API = process.env.REACT_APP_API_URL;
 
 export const ReglasAsociacion = () => {
     // Para el label del file
