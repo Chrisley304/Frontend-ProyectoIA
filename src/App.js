@@ -17,8 +17,14 @@ function App() {
             <Sidebar />
             <Routes>
                 <Route path="/" element={<Dashboard />} />
-                <Route path="/reglas-asociacion" element={<ReglasAsociacion />} />
-                <Route path="/metricas-distancia" element={<MetricasDistancia />} />
+                <Route
+                    path="/reglas-asociacion"
+                    element={<ReglasAsociacion />}
+                />
+                <Route
+                    path="/metricas-distancia"
+                    element={<MetricasDistancia />}
+                />
                 <Route path="*" element={<PageNotFound />} />
             </Routes>
         </BrowserRouter>

@@ -2,11 +2,11 @@
     cursor: pointer !important;
 }
 
-.entry-table-container{
+/* .entry-table-container{
     height: 60vh;
     overflow-x: scroll;
     overflow-y: scroll;
-}
+} */
 
 .resultados-container{
     width: 100%;

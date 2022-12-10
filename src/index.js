@@ -11,9 +11,7 @@ const root = createRoot(rootElement);
 // const darkMode = useDarkMode(false);
 
 root.render(
-    <StrictMode>
-        <NextUIProvider>
-            <App />
-        </NextUIProvider>
-    </StrictMode>
+    <NextUIProvider>
+        <App />
+    </NextUIProvider>
 );
