@@ -1,0 +1,22 @@
+
+.menu-usuario-trigger{
+    padding: 50px;
+}
+
+.nombre-usuario-menu{
+    padding-right: 10px;
+    font-size: 15px;
+}
+
+.usuario-container{
+    display: flex;
+    align-items: center;
+    align-content: center;
+}
+
+@media (max-width: 991px) { 
+  /* Se oculta el nombre del usuario */
+  .nombre-usuario-menu{
+    display: none;
+  }
+}

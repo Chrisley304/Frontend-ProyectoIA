@@ -1,12 +1,12 @@
-.boton-archivo input:hover{
+/* .boton-archivo input:hover{
     cursor: pointer !important;
 }
 
-/* .entry-table-container{
+.entry-table-container{
     height: 60vh;
     overflow-x: scroll;
     overflow-y: scroll;
-} */
+}
 
 .resultados-container{
     width: 100%;
@@ -16,8 +16,16 @@
 .card-resultados-body{
     padding: 40px;
 }
+*/
 
 .waiting-container{
+    text-align: center;
     margin-top: auto;
     margin-bottom: auto;
+} 
+
+.form-container{
+    display: flex;
+    flex-wrap: wrap;
+    box-sizing: border-box;
 }

@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import { Page } from "../../components/Page/Page";
-import { Input, Button, Grid, Card, Text } from "@nextui-org/react";
+import { Input, Button, Grid, Card, Text, Progress } from "@nextui-org/react";
 import "./ReglasAsociacion.css";
 import { useRef } from "react";
 import Papa from "papaparse";
+import { GraficaAsociacion } from "../../components/GraficaAsociacion/GraficaAsociacion";
 // import DataTable from "react-data-table-component";
 // import { CsvToHtmlTable } from "react-csv-to-table";
 // import { TablaAsociacion } from "../../components/TablaAsociacion/TablaAsociacion";
 import { ModalError } from "../../components/ModalError/ModalError";
 import { TablaAsociacion } from "../../components/TablaAsociacion/TablaAsociacion";
+import { LoadingModal } from "../../components/LoadingModal/LoadingModal";
 
 // Para utilizar el LOCALHOST:
 // const API = process.env.REACT_APP_LOCALHOST;
@@ -26,11 +28,16 @@ export const ReglasAsociacion = () => {
     const [textoError, setTextoError] = useState("");
     const [dataTable, setDataTable] = useState();
     const [headerTable, setHeaderTable] = useState();
+    const [Xtabla, setXtabla] = useState();
+    const [Ytabla, setYtabla] = useState();
+    const [isLoading, setIsLoading] = useState(false);
 
     // Reference for the invisible file input, to modify the beauty one
     const inputFile = useRef(null);
     // Reference for the form
     const form = useRef(null);
+
+    // const asociacionesChart = new Chart(ctx);
 
     const selectFile = () => {
         inputFile.current.click();
@@ -66,46 +73,57 @@ export const ReglasAsociacion = () => {
         validateFileExt(filenameLabel);
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        const formData = new FormData(form.current);
-        const res = await fetch(API + "asociacion", {
-            method: "POST",
-            body: formData,
-        });
-        const infoRes = await res.json();
-        console.log(infoRes);
-        if (!('error' in infoRes)){
-            const csvFile = infoRes["csv"];
-            setRespuestaNReglas(infoRes["nReglas"]);
-
-            const parsedCsv = Papa.parse(csvFile, { header: true });
-            const parsedData = parsedCsv?.data;
-            var tableHeaders = [];
-            var arrayHead= Object.keys(parsedData[0]);
-            for(var i in arrayHead){
-                tableHeaders.push({
-                    key: arrayHead[i],
-                    label: arrayHead[i].toUpperCase(),
-                });
+        try {
+            setIsLoading(true);
+            e.preventDefault();
+            const formData = new FormData(form.current);
+            const res = await fetch(API + "asociacion", {
+                method: "POST",
+                body: formData,
+            });
+            const infoRes = await res.json();
+            // console.log(infoRes);
+            if (!("error" in infoRes)) {
+                const csvFile = infoRes["csv"];
+                setRespuestaNReglas(infoRes["nReglas"]);
+                setXtabla(infoRes['datosX'])
+                setYtabla(infoRes['datosY'])
+                console.log(infoRes);
+                const parsedCsv = Papa.parse(csvFile, { header: true });
+                const parsedData = parsedCsv?.data;
+                // console.log(parsedData);
+                var tableHeaders = [];
+                var arrayHead = Object.keys(parsedData[0]);
+                for (var i in arrayHead) {
+                    tableHeaders.push({
+                        key: arrayHead[i],
+                        label: arrayHead[i],
+                    });
+                }
+                // console.log(tableHeaders);
+                // console.log(parsedData);
+                setDataTable(parsedData);
+                setHeaderTable(tableHeaders);
+            } else {
+                setTextoError(infoRes["error"]);
+                setErrorRespuesta(true);
             }
-            console.log(tableHeaders);
-            console.log(parsedData);
-            setDataTable(parsedData);
-            setHeaderTable(tableHeaders);
-        }else{
-            setTextoError(infoRes['error']);
+        } catch (error) {
+            setTextoError("Error al momento de realizar la petición al servidor Backend, si el problema persiste envia un correo a chris@chrisley.dev");
             setErrorRespuesta(true);
         }
-        
+        setIsLoading(false);
     };
+
+    
 
     return (
         <Page
-            titulo="Reglas de asociacion"
-            descripcion="En esta sección de la app puedes obtener las reglas de asociacion de un dataset que ingreses en CSV."
+            titulo="Reglas de asociación"
+            descripcion="En esta sección de la app puedes obtener reglas de asociación entre los elementos de un dataset que ingreses en CSV, este NO debe de contener encabezados."
         >
             <Grid.Container gap={2}>
-                <Grid xs={12} sm={6}>
+                <Grid xs={12} sm={4}>
                     <form ref={form} onSubmit={handleSubmit}>
                         <Grid.Container gap={2}>
                             <Grid xs={12}>
@@ -118,7 +136,6 @@ export const ReglasAsociacion = () => {
                                 ></input>
                                 <Input
                                     readOnly
-                                    width="350px"
                                     labelLeft="Archivo"
                                     className="boton-archivo"
                                     initialValue={filenameLabel}
@@ -183,41 +200,73 @@ export const ReglasAsociacion = () => {
                         </Grid.Container>
                     </form>
                 </Grid>
-                <Grid xs={12} sm={6}>
+                <LoadingModal visible={isLoading} />
+                {/* Si hay un error, se muestra el modal de error */}
+                {errorRespuesta && <ModalError textoError={textoError} />}
+                {/* Si no se generaron reglas, se muestra el error */}
+                {respuestaNReglas === 0 && (
+                    <ModalError textoError="La configuración ingresada no genero ninguna regla de asociación. Actualiza los valores e intenta de nuevo." />
+                )}
+                <Grid xs={12} sm={8}>
                     <div className="resultados-container">
                         <Card
                             className="card-resultados"
-                            css={{ h: "100%", overflow: "scroll" }}
+                            css={{ maxHeight: "700px", h:"100%", overflow: "scroll" }}
                         >
                             <Card.Body className="card-resultados-body">
-                                <Text h3>Resultados:</Text>
-                                {errorRespuesta ? (
-                                    <ModalError textoError={textoError} />
-                                ) : respuestaNReglas === -1 ? (
-                                    <div>Esperando entrada</div>
-                                ) : respuestaNReglas > 0 ? (
-                                    <div>
-                                        <Text>
-                                            Reglas generadas: {respuestaNReglas}
+                                <Text h3>Frecuencia de los elementos:</Text>
+                                {respuestaNReglas <= 0 ? (
+                                    <div className="waiting-container">
+                                        <Text css={{ pb: "$10" }}>
+                                            Esperando entrada...
                                         </Text>
-                                        <TablaAsociacion data={dataTable} cols={headerTable}/>
+                                        <Progress
+                                            indeterminated
+                                            value={50}
+                                            color="secondary"
+                                            status="secondary"
+                                        />
                                     </div>
                                 ) : (
-                                    <ModalError textoError="El archivo .csv ingresado no es compatible con el algoritmo de asociacion. Ingresa un .csv valido e intenta de nuevo." />
+                                    <GraficaAsociacion x={Xtabla} y={Ytabla} />
                                 )}
                             </Card.Body>
                         </Card>
-                        {/* <DataTable
-                            columns={csvEntryCols}
-                            data={csvEntryData}
-                        /> */}
-                        {/* <CsvToHtmlTable
-                            data={csvFile}
-                            csvDelimiter=","
-                            hasHeader={false}
-                            tableClassName="table table-striped table-hover"
-                        /> */}
-                        {/* <TablaAsociacion data={csvEntryData}/> */}
+                    </div>
+                </Grid>
+                <Grid xs={12}>
+                    <div className="resultados-container">
+                        <Card
+                            className="card-resultados"
+                            css={{ h: "100%", maxHeight: "500px" }}
+                        >
+                            <Card.Body className="card-resultados-body">
+                                <Text h3>Reglas generadas:</Text>
+                                {respuestaNReglas <= 0 ? (
+                                    <div className="waiting-container">
+                                        <Text css={{ pb: "$10" }}>
+                                            Esperando entrada...
+                                        </Text>
+                                        <Progress
+                                            indeterminated
+                                            value={50}
+                                            color="secondary"
+                                            status="secondary"
+                                        />
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <Text>
+                                            Se generaron <b>{respuestaNReglas}</b> reglas:
+                                        </Text>
+                                        <TablaAsociacion
+                                            data={dataTable}
+                                            cols={headerTable}
+                                        />
+                                    </div>
+                                )}
+                            </Card.Body>
+                        </Card>
                     </div>
                 </Grid>
             </Grid.Container>

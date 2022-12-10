@@ -5,10 +5,10 @@ export const TablaAsociacion = ({data,cols}) =>{
 
     return (
         <Table
+            compact
             aria-label="Tabla generada con las reglas de asociacion"
             css={{
-                height: "auto",
-                minWidth: "100%",
+                height: "auto"
             }}
         >
             <Table.Header columns={cols}>
