@@ -6,6 +6,7 @@ import {PageNotFound} from "./pages/PageNotFound/PageNotFound"
 import {ReglasAsociacion} from "./pages/ReglasAsociacion/ReglasAsociacion"
 import { createGlobalState } from "react-hooks-global-state";
 import { MetricasDistancia } from "./pages/MetricasDistancia/MetricasDistancia";
+import { Clustering } from "./pages/Clustering/Clustering";
 
 export const { useGlobalState } = createGlobalState({
     navBarCollapsed: false
@@ -24,6 +25,10 @@ function App() {
                 <Route
                     path="/metricas-distancia"
                     element={<MetricasDistancia />}
+                />
+                <Route
+                    path="/clustering"
+                    element={<Clustering />}
                 />
                 <Route path="*" element={<PageNotFound />} />
             </Routes>

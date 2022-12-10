@@ -1,29 +1,29 @@
 import React, { useState } from "react";
 import { Page } from "../../components/Page/Page";
-import { Input, Button, Grid, Card, Text, Progress } from "@nextui-org/react";
-import "./ReglasAsociacion.css";
+import { Input, Button, Grid, Card, Text, Progress, Radio } from "@nextui-org/react";
+import "./Clustering.css";
 import { useRef } from "react";
 import Papa from "papaparse";
-import { GraficaAsociacion } from "../../components/GraficaAsociacion/GraficaAsociacion";
 // import DataTable from "react-data-table-component";
 // import { CsvToHtmlTable } from "react-csv-to-table";
 // import { TablaAsociacion } from "../../components/TablaAsociacion/TablaAsociacion";
 import { ModalError } from "../../components/ModalError/ModalError";
 import { TablaAsociacion } from "../../components/TablaAsociacion/TablaAsociacion";
 import { LoadingModal } from "../../components/LoadingModal/LoadingModal";
+import { GraficaAsociacion } from "../../components/GraficaAsociacion/GraficaAsociacion";
 
 // Para utilizar el LOCALHOST:
 // const API = process.env.REACT_APP_LOCALHOST;
 // Para usar la API de Heroku:
 const API = process.env.REACT_APP_API_URL;
 
-export const ReglasAsociacion = () => {
+export const Clustering = () => {
     // Para el label del file
     const [filenameLabel, setFilenameLabel] = useState("");
-    const [soporteMinimo, setSoporteMinimo] = useState();
-    const [confianzaMinima, setConfianzaMinima] = useState();
-    const [elevacionMinima, setElevacionMinima] = useState();
-    const [respuestaNReglas, setRespuestaNReglas] = useState(-1);
+    const [maxClusters, setMaxClusters] = useState();
+    const [minClusters, setMinClusters] = useState();
+    const [metricaSeleccionada, setMetricaSeleccionada] = useState();
+    const [tipoClustering, setTipoClustering] = useState();
     const [errorRespuesta, setErrorRespuesta] = useState(false);
     const [textoError, setTextoError] = useState("");
     const [dataTable, setDataTable] = useState();
@@ -31,6 +31,7 @@ export const ReglasAsociacion = () => {
     const [Xtabla, setXtabla] = useState();
     const [Ytabla, setYtabla] = useState();
     const [isLoading, setIsLoading] = useState(false);
+    const [salida, setSalida] = useState(false);
 
     // Reference for the invisible file input, to modify the beauty one
     const inputFile = useRef(null);
@@ -67,9 +68,10 @@ export const ReglasAsociacion = () => {
     }, [filenameLabel]);
 
     const isFormValid =
-        soporteMinimo &&
-        confianzaMinima &&
-        elevacionMinima &&
+        tipoClustering &&
+        metricaSeleccionada &&
+        minClusters &&
+        maxClusters &&
         validateFileExt(filenameLabel);
 
     const handleSubmit = async (e) => {
@@ -77,7 +79,7 @@ export const ReglasAsociacion = () => {
             setIsLoading(true);
             e.preventDefault();
             const formData = new FormData(form.current);
-            const res = await fetch(API + "asociacion", {
+            const res = await fetch(API + "clustering/" + tipoClustering, {
                 method: "POST",
                 body: formData,
             });
@@ -85,9 +87,8 @@ export const ReglasAsociacion = () => {
             // console.log(infoRes);
             if (!("error" in infoRes)) {
                 const csvFile = infoRes["csv"];
-                setRespuestaNReglas(infoRes["nReglas"]);
-                setXtabla(infoRes['datosX'])
-                setYtabla(infoRes['datosY'])
+                setXtabla(infoRes["datosX"]);
+                setYtabla(infoRes["datosY"]);
                 console.log(infoRes);
                 const parsedCsv = Papa.parse(csvFile, { header: true });
                 const parsedData = parsedCsv?.data;
@@ -104,26 +105,29 @@ export const ReglasAsociacion = () => {
                 // console.log(parsedData);
                 setDataTable(parsedData);
                 setHeaderTable(tableHeaders);
+                setSalida(true);
             } else {
                 setTextoError(infoRes["error"]);
                 setErrorRespuesta(true);
+                setSalida(false);
             }
         } catch (error) {
-            setTextoError("Error al momento de realizar la petición al servidor Backend, si el problema persiste envia un correo a chris@chrisley.dev");
+            setTextoError(
+                "Error al momento de realizar la petición al servidor Backend, si el problema persiste envia un correo a chris@chrisley.dev"
+            );
             setErrorRespuesta(true);
+            setSalida(false);
         }
         setIsLoading(false);
     };
 
-    
-
     return (
         <Page
-            titulo="Reglas de asociación"
-            descripcion="En esta sección de la app puedes obtener reglas de asociación entre los elementos de un dataset que ingreses en CSV, este NO debe de contener encabezados."
+            titulo="Clustering"
+            descripcion="En esta sección de la app puedes obtener grupos de clusters entre los elementos de un dataset que ingreses en CSV."
         >
             <Grid.Container gap={2}>
-                <Grid xs={12} sm={4}>
+                <Grid xs={12} sm={6}>
                     <form ref={form} onSubmit={handleSubmit}>
                         <Grid.Container gap={2}>
                             <Grid xs={12}>
@@ -147,44 +151,64 @@ export const ReglasAsociacion = () => {
                                 />
                             </Grid>
                             <Grid xs={12}>
+                                <Radio.Group
+                                    label="Tipo de clustering"
+                                    value={tipoClustering}
+                                    onChange={setTipoClustering}
+                                    >
+                                    <Radio size="sm" value="jerarquico">
+                                        Método Jerarquico
+                                    </Radio>
+                                    <Radio size="sm" value="particional">
+                                        Método Particional
+                                    </Radio>
+                                </Radio.Group>
+                            </Grid>
+                            <Grid xs={12}>
+                                {/* 5576080946 */}
+                                {/* 5610980095 */}
+                                <Radio.Group
+                                    label="Métrica a utilizar"
+                                    value={metricaSeleccionada}
+                                    onChange={setMetricaSeleccionada}
+                                    name="tipoDistancia"
+                                >
+                                    <Radio size="sm" value="euclidean">
+                                        Métrica Euclidiana
+                                    </Radio>
+                                    <Radio size="sm" value="chebyshev">
+                                        Métrica Chebyshev
+                                    </Radio>
+                                    <Radio size="sm" value="cityblock">
+                                        Métrica de Manhattan (City block)
+                                    </Radio>
+                                </Radio.Group>
+                            </Grid>
+                            <Grid xs={12}>
                                 <Input
                                     helperText=""
                                     type="number"
-                                    step={0.001}
+                                    step={1}
                                     min={0}
-                                    name="soporteMinimo"
-                                    label="Soporte mínimo"
+                                    name="minClusters"
                                     onChange={(e) =>
-                                        setSoporteMinimo(e.target.value)
+                                        setMinClusters(e.target.value)
                                     }
-                                    placeholder="Ej. 0.01"
+                                    label="Numero de mínimo de clusters"
+                                    placeholder="Ej. 2"
                                 />
                             </Grid>
                             <Grid xs={12}>
                                 <Input
                                     helperText=""
                                     type="number"
-                                    step={0.001}
+                                    step={1}
                                     min={0}
-                                    name="confianzaMinima"
+                                    name="maxClusters"
                                     onChange={(e) =>
-                                        setConfianzaMinima(e.target.value)
+                                        setMaxClusters(e.target.value)
                                     }
-                                    label="Confianza mínima"
-                                    placeholder="Ej. 0.3"
-                                />
-                            </Grid>
-                            <Grid xs={12}>
-                                <Input
-                                    helperText=""
-                                    type="number"
-                                    step={0.001}
-                                    min={0}
-                                    name="elevacionMinima"
-                                    onChange={(e) =>
-                                        setElevacionMinima(e.target.value)
-                                    }
-                                    label="Elevación mínima"
+                                    label="Numero de máximo de clusters"
                                     placeholder="Ej. 2"
                                 />
                             </Grid>
@@ -207,18 +231,22 @@ export const ReglasAsociacion = () => {
                 {/* Si hay un error, se muestra el modal de error */}
                 {errorRespuesta && <ModalError textoError={textoError} />}
                 {/* Si no se generaron reglas, se muestra el error */}
-                {respuestaNReglas === 0 && (
+                {/* {respuestaNReglas === 0 && (
                     <ModalError textoError="La configuración ingresada no genero ninguna regla de asociación. Actualiza los valores e intenta de nuevo." />
-                )}
-                <Grid xs={12} sm={8}>
+                )} */}
+                {/* <Grid xs={12} sm={8}>
                     <div className="resultados-container">
                         <Card
                             className="card-resultados"
-                            css={{ maxHeight: "700px", h:"100%", overflow: "scroll" }}
+                            css={{
+                                maxHeight: "700px",
+                                h: "100%",
+                                overflow: "scroll",
+                            }}
                         >
                             <Card.Body className="card-resultados-body">
                                 <Text h3>Frecuencia de los elementos:</Text>
-                                {respuestaNReglas <= 0 ? (
+                                {salida ? (
                                     <div className="waiting-container">
                                         <Text css={{ pb: "$10" }}>
                                             Esperando entrada...
@@ -236,7 +264,7 @@ export const ReglasAsociacion = () => {
                             </Card.Body>
                         </Card>
                     </div>
-                </Grid>
+                </Grid> */}
                 <Grid xs={12}>
                     <div className="resultados-container">
                         <Card
@@ -244,8 +272,8 @@ export const ReglasAsociacion = () => {
                             css={{ h: "100%", maxHeight: "500px" }}
                         >
                             <Card.Body className="card-resultados-body">
-                                <Text h3>Reglas generadas:</Text>
-                                {respuestaNReglas <= 0 ? (
+                                <Text h3>Datos etiquetados con clusters:</Text>
+                                {salida <= 0 ? (
                                     <div className="waiting-container">
                                         <Text css={{ pb: "$10" }}>
                                             Esperando entrada...
@@ -259,9 +287,10 @@ export const ReglasAsociacion = () => {
                                     </div>
                                 ) : (
                                     <div>
-                                        <Text>
-                                            Se generaron <b>{respuestaNReglas}</b> reglas:
-                                        </Text>
+                                        {/* <Text>
+                                            Se generaron{" "}
+                                            <b>{respuestaNReglas}</b> reglas:
+                                        </Text> */}
                                         <TablaAsociacion
                                             data={dataTable}
                                             cols={headerTable}

@@ -73,7 +73,7 @@ export const MetricasDistancia = () => {
         
         const formData = new FormData(form.current);
         const res = await fetch(
-            API + "/matriz-distancia/" + metricaSeleccionada,
+            API + "matriz-distancia/" + metricaSeleccionada,
             {
                 method: "POST",
                 body: formData,
@@ -111,7 +111,7 @@ export const MetricasDistancia = () => {
         
         const formData = new FormData(form.current);
         const res = await fetch(
-            API + "/distancia-objetos/" + metricaSeleccionada,
+            API + "distancia-objetos/" + metricaSeleccionada,
             {
                 method: "POST",
                 body: formData,
@@ -169,13 +169,13 @@ export const MetricasDistancia = () => {
                                             value={metricaSeleccionada}
                                             onChange={setMetricaSeleccionada}
                                         >
-                                            <Radio value="euclidean">
+                                            <Radio size="sm" value="euclidean">
                                                 Métrica Euclidiana
                                             </Radio>
-                                            <Radio value="chebyshev">
+                                            <Radio size="sm" value="chebyshev">
                                                 Métrica Chebyshev
                                             </Radio>
-                                            <Radio value="cityblock">
+                                            <Radio size="sm" value="cityblock">
                                                 Métrica de Manhattan (City
                                                 block)
                                             </Radio>
@@ -256,8 +256,8 @@ export const MetricasDistancia = () => {
                             >
                                 <Card.Body className="card-resultados-body">
                                     <Text h3>
-                                        Distancia {metricaSeleccionada} entre
-                                        los objetos {objetoA} & {objetoB}:
+                                        Distancia entre
+                                        los objetos:
                                     </Text>
                                     {resultadoDistancia ? (
                                         <div className="waiting-container">
@@ -268,12 +268,12 @@ export const MetricasDistancia = () => {
                                             <Text css={{ pb: "$10" }}>
                                                 Esperando entrada...
                                             </Text>
-                                            <Progress
+                                            {/* <Progress
                                                 indeterminated
                                                 value={50}
                                                 color="secondary"
                                                 status="secondary"
-                                            />
+                                            /> */}
                                         </div>
                                     )}
                                 </Card.Body>
@@ -300,7 +300,7 @@ export const MetricasDistancia = () => {
                         >
                             <Card.Body className="card-resultados-body">
                                 <Text h3>
-                                    Matriz de distancia {metricaSeleccionada} de
+                                    Matriz de distancia de
                                     los elementos:
                                 </Text>
                                 {salida ? (
