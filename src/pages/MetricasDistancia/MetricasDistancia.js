@@ -141,7 +141,7 @@ export const MetricasDistancia = () => {
                             // onSubmit={handleSubmit}
                             className="form-container"
                         >
-                            <Grid xs={6}>
+                            <Grid xs={12} sm={6}>
                                 <Grid.Container gap={2}>
                                     <Grid xs={12}>
                                         <input
@@ -191,7 +191,7 @@ export const MetricasDistancia = () => {
                                             onPress={handleSubmitMatriz}
                                             value="matriz-distancias"
                                         >
-                                            Obtener metricas de distancia
+                                            Obtener matriz de distancia
                                         </Button>
                                     </Grid>
                                 </Grid.Container>
@@ -237,7 +237,7 @@ export const MetricasDistancia = () => {
                                             onPress={handleSubmitDistObj}
                                             value="distancia-objetos"
                                         >
-                                            Obtener distancia entre elementos
+                                            Distancia entre elementos
                                         </Button>
                                     </Grid>
                                 </Grid.Container>
