@@ -18,3 +18,12 @@
     color: var(--nextui-colors-primary);
     font-weight: bold;
 }
+
+@media (max-width: 991px) { 
+  /* En mobile, se invierte */
+  .footer-container, .footer-container.side-bar-collapsed{
+    margin-left: 0px;
+    padding: 30px;
+  }
+
+}
