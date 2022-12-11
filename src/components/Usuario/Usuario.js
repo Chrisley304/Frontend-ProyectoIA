@@ -5,6 +5,7 @@ import "./Usuario.css"
 import "boxicons";
 
 export const Usuario = ({nombreUsuario}) => {
+
     return (
         <div className="usuario-container">
             <span className="nombre-usuario-menu">{nombreUsuario}</span>
@@ -17,7 +18,10 @@ export const Usuario = ({nombreUsuario}) => {
                 // description="chris@chrisley.dev"
                 src={imagenChris}
             />
-            <box-icon name="chevron-down"></box-icon>
+            <box-icon
+                name="chevron-down"
+                color={"var(--nextui-colors-text)"}
+            ></box-icon>
         </div>
     );
 };

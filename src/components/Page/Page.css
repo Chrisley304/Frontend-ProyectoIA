@@ -1,11 +1,9 @@
 .page-container{
-    background-color: var(--background-color);
     margin-left: 275px;
     height: 100vh;
     padding: 50px;
     overflow-y: scroll;
     transition: var(--tran-general);
-
 }
 .page-container.side-bar-collapsed{
     margin-left: 100px;
@@ -20,11 +18,11 @@
 }
 
 .resaltar-texto{
-  color: var(--color-principal);
+  color: var(--nextui-colors-primary);
 }
 
 .descripcion-seccion{
-    color: var(--color-inactivo);
+    color: var(--nextui-colors-inactivo);
     font-size: 18px;
     font-weight: 500;
 }

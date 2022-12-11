@@ -5,7 +5,7 @@
     height: 100%;
     width: 275px;
     padding: 10px 14px;
-    background: var(--sidebar-color);
+    background: var(--nextui-colors-sidebar);
     transition: var(--tran-general);
     z-index: 100;
 }
@@ -27,7 +27,7 @@
 
 .sidebar-logo{
     display: flex;
-    color: var(--color-texto);
+    color: var(--nextui-colors-text);
     justify-content: center;
     align-items: center;
 }
@@ -35,7 +35,7 @@
 .sidebar-logo.active, .sidebar-logo.active:hover{
     background-color: transparent;
     font-weight: 500;
-    color: var(--color-texto);
+    color: var(--nextui-colors-text);
 }
 
 .sidebar-logo img{
@@ -58,9 +58,8 @@
 }
 
 .sidebar-close button:hover{
-    background-color: var(--color-hover);
+    background-color: var(--nextui-colors-hover);
 }
-
 .sidebar-content{
     margin-top: auto;
     margin-bottom: auto;

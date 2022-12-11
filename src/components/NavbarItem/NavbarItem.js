@@ -23,9 +23,7 @@ export const NavbarItem = ({label,link,icon,iconType}) =>{
                 type={iconType}
                 name={icon}
                 size="25px"
-                color={
-                    active ? "white" : "var(--color-inactivo)"
-                }
+                color={active ? "white" : "var(--nextui-colors-inactivo)"}
             ></box-icon>
             <span className="nav-item-label">{label}</span>
         </NavLink>
