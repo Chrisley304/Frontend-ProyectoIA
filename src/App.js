@@ -9,6 +9,7 @@ import { MetricasDistancia } from "./pages/MetricasDistancia/MetricasDistancia";
 import { Clustering } from "./pages/Clustering/Clustering";
 import { Configuracion } from "./pages/Configuracion/Configuracion";
 import { NextUIProvider, createTheme } from "@nextui-org/react";
+import { Footer } from "./components/Footer/Footer";
 import useDarkMode from "use-dark-mode";
 
 const lightTheme = createTheme({
@@ -100,6 +101,7 @@ function App() {
                 />
                 <Route path="*" element={<PageNotFound />} />
             </Routes>
+            <Footer/>
         </BrowserRouter>
     </NextUIProvider>
     );

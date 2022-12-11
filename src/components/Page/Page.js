@@ -4,7 +4,6 @@ import { Grid } from "@nextui-org/react";
 import {MenuUsuario} from "../MenuUsuario/MenuUsuario"
 import { useGlobalState } from "../../App";
 
-
 export const Page = (props)=>{
 
     let titulo = props.titulo;

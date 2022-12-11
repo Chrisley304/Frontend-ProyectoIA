@@ -1,0 +1,20 @@
+.footer-container{
+    background: var(--nextui-colors-sidebar);
+    margin-left: 275px;
+    padding: 50px;
+    text-align: center;
+    transition: var(--tran-general);
+}
+
+.footer-container.side-bar-collapsed{
+    background: var(--nextui-colors-sidebar);
+    margin-left: 100px;
+}
+
+.footer-container a{
+    color: var(--nextui-colors-primary);
+}
+.footer-container a:hover{
+    color: var(--nextui-colors-primary);
+    font-weight: bold;
+}

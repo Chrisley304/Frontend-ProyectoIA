@@ -1,8 +1,8 @@
 .page-container{
     margin-left: 275px;
-    height: 100vh;
+    height: 100%;
     padding: 50px;
-    overflow-y: scroll;
+    /* overflow-y: scroll; */
     transition: var(--tran-general);
 }
 .page-container.side-bar-collapsed{
