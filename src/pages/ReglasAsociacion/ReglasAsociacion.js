@@ -86,8 +86,10 @@ export const ReglasAsociacion = () => {
             if (!("error" in infoRes)) {
                 const csvFile = infoRes["csv"];
                 setRespuestaNReglas(infoRes["nReglas"]);
-                setXtabla(infoRes['datosX'])
-                setYtabla(infoRes['datosY'])
+                var X = infoRes["datosX"];
+                var Y = infoRes["datosY"];
+                setXtabla(X.reverse());
+                setYtabla(Y.reverse());
                 console.log(infoRes);
                 const parsedCsv = Papa.parse(csvFile, { header: true });
                 const parsedData = parsedCsv?.data;
