@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Page } from "../../components/Page/Page";
-import { Input, Button, Grid, Card, Text, Progress, Radio } from "@nextui-org/react";
+import { Input, Button, Grid, Card, Text, Radio } from "@nextui-org/react";
 import "./MetricasDistancia.css";
 import { useRef } from "react";
 import Papa from "papaparse";
@@ -319,12 +319,12 @@ export const MetricasDistancia = () => {
                                         <Text css={{ pb: "$10" }}>
                                             Esperando entrada...
                                         </Text>
-                                        <Progress
+                                        {/* <Progress
                                             indeterminated
                                             value={50}
                                             color="secondary"
                                             status="secondary"
-                                        />
+                                        /> */}
                                     </div>
                                 )}
                             </Card.Body>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Page } from "../../components/Page/Page";
-import { Input, Button, Grid, Card, Text, Progress } from "@nextui-org/react";
+import { Input, Button, Grid, Card, Text } from "@nextui-org/react";
 import "./ReglasAsociacion.css";
 import { useRef } from "react";
 import Papa from "papaparse";
@@ -223,12 +223,12 @@ export const ReglasAsociacion = () => {
                                         <Text css={{ pb: "$10" }}>
                                             Esperando entrada...
                                         </Text>
-                                        <Progress
+                                        {/* <Progress
                                             indeterminated
                                             value={50}
                                             color="secondary"
                                             status="secondary"
-                                        />
+                                        /> */}
                                     </div>
                                 ) : (
                                     <GraficaAsociacion x={Xtabla} y={Ytabla} />
@@ -250,12 +250,12 @@ export const ReglasAsociacion = () => {
                                         <Text css={{ pb: "$10" }}>
                                             Esperando entrada...
                                         </Text>
-                                        <Progress
+                                        {/* <Progress
                                             indeterminated
                                             value={50}
                                             color="secondary"
                                             status="secondary"
-                                        />
+                                        /> */}
                                     </div>
                                 ) : (
                                     <div>

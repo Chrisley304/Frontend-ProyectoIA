@@ -74,6 +74,15 @@ export const { useGlobalState } = createGlobalState({
 function App() {
 
     const darkMode = useDarkMode(false);
+    if (darkMode.value) {
+        document
+            .querySelector('meta[name="theme-color"]')
+            ?.setAttribute("content", "#121212");
+    }else{
+        document
+            .querySelector('meta[name="theme-color"]')
+            ?.setAttribute("content", "#F8F9FC");
+    }
 
     return (
         <NextUIProvider

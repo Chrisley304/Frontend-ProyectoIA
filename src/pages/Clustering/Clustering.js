@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Page } from "../../components/Page/Page";
-import { Input, Button, Grid, Card, Text, Progress, Radio } from "@nextui-org/react";
+import { Input, Button, Grid, Card, Text, Radio } from "@nextui-org/react";
 import "./Clustering.css";
 import { useRef } from "react";
 import Papa from "papaparse";
@@ -10,7 +10,7 @@ import Papa from "papaparse";
 import { ModalError } from "../../components/ModalError/ModalError";
 import { TablaAsociacion } from "../../components/TablaAsociacion/TablaAsociacion";
 import { LoadingModal } from "../../components/LoadingModal/LoadingModal";
-import { GraficaAsociacion } from "../../components/GraficaAsociacion/GraficaAsociacion";
+// import { GraficaAsociacion } from "../../components/GraficaAsociacion/GraficaAsociacion";
 
 // Para utilizar el LOCALHOST:
 // const API = process.env.REACT_APP_LOCALHOST;
@@ -28,8 +28,8 @@ export const Clustering = () => {
     const [textoError, setTextoError] = useState("");
     const [dataTable, setDataTable] = useState();
     const [headerTable, setHeaderTable] = useState();
-    const [Xtabla, setXtabla] = useState();
-    const [Ytabla, setYtabla] = useState();
+    // const [Xtabla, setXtabla] = useState();
+    // const [Ytabla, setYtabla] = useState();
     const [isLoading, setIsLoading] = useState(false);
     const [salida, setSalida] = useState(false);
 
@@ -87,8 +87,8 @@ export const Clustering = () => {
             // console.log(infoRes);
             if (!("error" in infoRes)) {
                 const csvFile = infoRes["csv"];
-                setXtabla(infoRes["datosX"]);
-                setYtabla(infoRes["datosY"]);
+                // setXtabla(infoRes["datosX"]);
+                // setYtabla(infoRes["datosY"]);
                 console.log(infoRes);
                 const parsedCsv = Papa.parse(csvFile, { header: true });
                 const parsedData = parsedCsv?.data;
@@ -278,12 +278,12 @@ export const Clustering = () => {
                                         <Text css={{ pb: "$10" }}>
                                             Esperando entrada...
                                         </Text>
-                                        <Progress
+                                        {/* <Progress
                                             indeterminated
                                             value={50}
                                             color="secondary"
                                             status="secondary"
-                                        />
+                                        /> */}
                                     </div>
                                 ) : (
                                     <div>
