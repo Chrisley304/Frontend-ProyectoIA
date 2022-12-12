@@ -28,7 +28,7 @@ export const GraficaAsociacion = ({x,y}) => {
         labels: y,
         datasets: [
             {
-                label: "Items",
+                label: "Transacciones",
                 data: x,
                 borderWidth: 1,
             },
