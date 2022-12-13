@@ -7,7 +7,6 @@
 }
 
 .footer-container.side-bar-collapsed{
-    background: var(--nextui-colors-sidebar);
     margin-left: 100px;
 }
 
