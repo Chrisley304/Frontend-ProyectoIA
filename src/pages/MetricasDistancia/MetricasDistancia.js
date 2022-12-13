@@ -10,6 +10,7 @@ import Papa from "papaparse";
 import { ModalError } from "../../components/ModalError/ModalError";
 import { TablaAsociacion } from "../../components/TablaAsociacion/TablaAsociacion";
 import { LoadingModal } from "../../components/LoadingModal/LoadingModal";
+import archivoPrueba from '../../assets/csvPrueba/Hipoteca.csv'
 
 // Para utilizar el LOCALHOST:
 // const API = process.env.REACT_APP_LOCALHOST;
@@ -131,7 +132,18 @@ export const MetricasDistancia = () => {
     return (
         <Page
             titulo="Métricas de distancia"
-            descripcion="En esta sección de la app puedes obtener las metricas de distancia de un dataset que ingreses en CSV, utilizando el algoritmo que desees."
+            descripcion={
+                <div>
+                    <p>
+                        En esta sección de la app puedes obtener las metricas de
+                        distancia de un dataset que ingreses en CSV, utilizando el
+                        algoritmo que desees.
+                    </p>
+                    <p>
+                        Si no tienes un dataset para utilizar el agoritmo, obten uno dando click <a href={archivoPrueba}>aquí</a>.
+                    </p>
+                </div>
+            }
         >
             <Grid.Container gap={2}>
                 <Grid.Container>
@@ -255,13 +267,12 @@ export const MetricasDistancia = () => {
                                 }}
                             >
                                 <Card.Body className="card-resultados-body">
-                                    <Text h3>
-                                        Distancia entre
-                                        los objetos:
-                                    </Text>
+                                    <Text h3>Distancia entre los objetos:</Text>
                                     {resultadoDistancia ? (
                                         <div className="waiting-container">
-                                            <Text size={20}>{resultadoDistancia}</Text>
+                                            <Text size={20}>
+                                                {resultadoDistancia}
+                                            </Text>
                                         </div>
                                     ) : (
                                         <div className="waiting-container">
@@ -300,8 +311,7 @@ export const MetricasDistancia = () => {
                         >
                             <Card.Body className="card-resultados-body">
                                 <Text h3>
-                                    Matriz de distancia de
-                                    los elementos:
+                                    Matriz de distancia de los elementos:
                                 </Text>
                                 {salida ? (
                                     <div>

@@ -11,6 +11,7 @@ import { ModalError } from "../../components/ModalError/ModalError";
 import { TablaAsociacion } from "../../components/TablaAsociacion/TablaAsociacion";
 import { LoadingModal } from "../../components/LoadingModal/LoadingModal";
 // import { GraficaAsociacion } from "../../components/GraficaAsociacion/GraficaAsociacion";
+import archivoPrueba from "../../assets/csvPrueba/Hipoteca.csv";
 
 // Para utilizar el LOCALHOST:
 // const API = process.env.REACT_APP_LOCALHOST;
@@ -124,7 +125,19 @@ export const Clustering = () => {
     return (
         <Page
             titulo="Clustering"
-            descripcion="En esta sección de la app puedes obtener grupos de clusters entre los elementos de un dataset que ingreses en CSV."
+            descripcion={
+                <div>
+                    <p>
+                        En esta sección de la app puedes obtener grupos de
+                        clusters entre los elementos de un dataset que ingreses
+                        en CSV.
+                    </p>
+                    <p>
+                        Si no tienes un dataset para utilizar el agoritmo, obten
+                        uno dando click <a href={archivoPrueba}>aquí</a>.
+                    </p>
+                </div>
+            }
         >
             <Grid.Container gap={2}>
                 <Grid xs={12} sm={6}>
@@ -155,7 +168,7 @@ export const Clustering = () => {
                                     label="Tipo de clustering"
                                     value={tipoClustering}
                                     onChange={setTipoClustering}
-                                    >
+                                >
                                     <Radio size="sm" value="jerarquico">
                                         Método Jerarquico
                                     </Radio>

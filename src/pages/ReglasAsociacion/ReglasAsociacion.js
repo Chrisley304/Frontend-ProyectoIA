@@ -11,6 +11,7 @@ import { GraficaAsociacion } from "../../components/GraficaAsociacion/GraficaAso
 import { ModalError } from "../../components/ModalError/ModalError";
 import { TablaAsociacion } from "../../components/TablaAsociacion/TablaAsociacion";
 import { LoadingModal } from "../../components/LoadingModal/LoadingModal";
+import archivoPrueba from '../../assets/csvPrueba/movies.csv'
 
 // Para utilizar el LOCALHOST:
 // const API = process.env.REACT_APP_LOCALHOST;
@@ -122,7 +123,19 @@ export const ReglasAsociacion = () => {
     return (
         <Page
             titulo="Reglas de asociación"
-            descripcion="En esta sección de la app puedes obtener reglas de asociación entre los elementos de un dataset que ingreses en CSV, este NO debe de contener encabezados."
+            descripcion={
+                <div>
+                    <p>
+                        En esta sección de la app puedes obtener reglas de
+                        asociación entre los elementos de un dataset que
+                        ingreses en CSV, este NO debe de contener encabezados.
+                    </p>
+                    <p>
+                        Si no tienes un dataset para utilizar el agoritmo, obten
+                        uno dando click <a href={archivoPrueba}>aquí</a>.
+                    </p>
+                </div>
+            }
         >
             <Grid.Container gap={2}>
                 <Grid xs={12} sm={4}>
@@ -216,7 +229,11 @@ export const ReglasAsociacion = () => {
                     <div className="resultados-container">
                         <Card
                             className="card-resultados"
-                            css={{ maxHeight: "700px", h:"100%", overflow: "scroll" }}
+                            css={{
+                                maxHeight: "700px",
+                                h: "100%",
+                                overflow: "scroll",
+                            }}
                         >
                             <Card.Body className="card-resultados-body">
                                 <Text h3>Frecuencia de los elementos:</Text>
@@ -262,7 +279,8 @@ export const ReglasAsociacion = () => {
                                 ) : (
                                     <div>
                                         <Text>
-                                            Se generaron <b>{respuestaNReglas}</b> reglas:
+                                            Se generaron{" "}
+                                            <b>{respuestaNReglas}</b> reglas:
                                         </Text>
                                         <TablaAsociacion
                                             data={dataTable}
