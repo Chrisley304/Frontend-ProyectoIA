@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import "./Sidebar.css"
 import {NavbarItem} from "../NavbarItem/NavbarItem"
 import { Button } from "@nextui-org/react";
@@ -10,7 +10,11 @@ export const Sidebar = () =>{
 
     const [navBarCollapsed, setNavBarCollapsed] =
         useGlobalState("navBarCollapsed");
-        
+    
+    useEffect(() => {
+        window.localStorage.setItem("navbarCollapse", navBarCollapsed);
+    }, [navBarCollapsed]);
+
     const handleNavbarCollapse = () => {
         // console.log(navBarCollapsed);
         setNavBarCollapsed(!navBarCollapsed);

@@ -1,16 +1,17 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import useDarkMode from "use-dark-mode";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import {Sidebar} from "./components/Sidebar/Sidebar"
 import {Dashboard} from "./pages/Dashboard/Dashboard"
 import {PageNotFound} from "./pages/PageNotFound/PageNotFound"
 import {ReglasAsociacion} from "./pages/ReglasAsociacion/ReglasAsociacion"
-import { createGlobalState } from "react-hooks-global-state";
 import { MetricasDistancia } from "./pages/MetricasDistancia/MetricasDistancia";
 import { Clustering } from "./pages/Clustering/Clustering";
 import { Configuracion } from "./pages/Configuracion/Configuracion";
 import { NextUIProvider, createTheme } from "@nextui-org/react";
 import { Footer } from "./components/Footer/Footer";
-import useDarkMode from "use-dark-mode";
+import { Login } from "./pages/Login/Login";
+import { createGlobalState } from "react-hooks-global-state";
 
 const lightTheme = createTheme({
     type: "light", // it could be "light" or "dark"
@@ -68,12 +69,25 @@ const darkTheme = createTheme({
 });
 
 export const { useGlobalState } = createGlobalState({
-    navBarCollapsed: false
+    navBarCollapsed: false,
+    isLogged: false,
 });
 
 function App() {
-
+    const [isLogged, setisLogged] = useGlobalState("isLogged");
+    const [navBarCollapsed, setNavBarCollapsed] = useGlobalState("navBarCollapsed");
     const darkMode = useDarkMode(false);
+    useEffect(() => {
+        const loggedData = window.localStorage.getItem("userIsLogged");
+        const collapsedData = window.localStorage.getItem("navbarCollapse");
+        if (loggedData != null) {
+            setisLogged("true" === loggedData);
+        }
+        if (collapsedData != null) {
+            setNavBarCollapsed("true" === collapsedData);
+        }
+    }, []);
+
     if (darkMode.value) {
         document
             .querySelector('meta[name="theme-color"]')
@@ -89,7 +103,7 @@ function App() {
         theme={darkMode.value? darkTheme: lightTheme}
     >
         <BrowserRouter>
-            <Sidebar />
+            {isLogged && <Sidebar />}
             <Routes>
                 <Route path="/" element={<Dashboard />} />
                 <Route
@@ -108,9 +122,13 @@ function App() {
                     path="/configuracion"
                     element={<Configuracion />}
                 />
+                <Route
+                    path="/login"
+                    element={<Login />}
+                />
                 <Route path="*" element={<PageNotFound />} />
             </Routes>
-            <Footer/>
+            {isLogged && <Footer/>}
         </BrowserRouter>
     </NextUIProvider>
     );
