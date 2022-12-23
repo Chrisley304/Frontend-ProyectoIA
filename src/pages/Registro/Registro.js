@@ -1,8 +1,8 @@
 import React, {useState, useEffect} from "react";
 import {Container, Input, useInput, Image, Grid, Text, User, Button } from "@nextui-org/react";
-import loginImage from "../../assets/img/login-background.jpg";
+import loginImage from "../../assets/img/walle.jpg";
 import logoImage from "../../assets/img/logoIA.png"
-import "./Login.css";
+import "./Registro.css";
 import { Link } from "react-router-dom";
 import { useGlobalState } from "../../App";
 import { useNavigate } from "react-router-dom";
@@ -10,7 +10,7 @@ import "firebase/auth";
 import { useFirebaseApp, useUser } from "reactfire";
 import { async } from "@firebase/util";
 
-export const Login = () => {
+export const Registro = () => {
 
     // const firebase = useFirebaseApp();
     // const user = useUser();
@@ -69,19 +69,34 @@ export const Login = () => {
                         <Grid.Container gap={2}>
                             <Grid>
                                 <Text h1 css={{ marginBottom: "$0" }}>
-                                    ¡Hola! Bienvenido de vuelta
+                                    ¡Bienvenido a Algorithmia!
                                 </Text>
                                 <p className="login-description">
-                                    Por favor ingresa tus datos para entrar a la
-                                    aplicación.
+                                    Por favor ingresa tus datos para registrarte
+                                    en la aplicación.
                                 </p>
                             </Grid>
 
                             <Grid xs={12}>
                                 <Input
+                                    clearable
+                                    label="Nombre (s)"
+                                    width="100%"
+                                    placeholder="Ingresa tu nombre"
+                                />
+                            </Grid>
+                            <Grid xs={12}>
+                                <Input
+                                    clearable
+                                    label="Apellidos"
+                                    width="100%"
+                                    placeholder="Ingresa tu nombre"
+                                />
+                            </Grid>
+                            <Grid xs={12}>
+                                <Input
                                     {...bindings}
                                     clearable
-                                    shadow={false}
                                     onClearClick={reset}
                                     status={helper.color}
                                     color={helper.color}
@@ -90,7 +105,9 @@ export const Login = () => {
                                     type="email"
                                     label="Correo electrónico"
                                     width="100%"
-                                    onChange={(e) => setUserEmail(e.target.value)}
+                                    onChange={(e) =>
+                                        setUserEmail(e.target.value)
+                                    }
                                     placeholder="Ingresa tu correo electrónico"
                                 />
                             </Grid>
@@ -99,11 +116,19 @@ export const Login = () => {
                                     type="password"
                                     label="Contraseña"
                                     placeholder="Ingresa tu contraseña"
-                                    onChange={(e) => setUserPassword(e.target.value)}
-                                    helperText={
-                                        <Link className="password-forgotten-button">
-                                            Olvide mi contraseña
-                                        </Link>
+                                    onChange={(e) =>
+                                        setUserPassword(e.target.value)
+                                    }
+                                    width="100%"
+                                />
+                            </Grid>
+                            <Grid xs={12}>
+                                <Input
+                                    type="password"
+                                    label="Verificación de contraseña"
+                                    placeholder="Ingresa nuevamente tu contraseña"
+                                    onChange={(e) =>
+                                        setUserPassword(e.target.value)
                                     }
                                     width="100%"
                                 />
@@ -117,7 +142,7 @@ export const Login = () => {
                                     }}
                                     onPress={handleSubmit2}
                                 >
-                                    Iniciar sesión
+                                    Registrarse
                                 </Button>
                             </Grid>
                             <Grid xs={12} sm={6} css={{ marginTop: "$10" }}>
@@ -129,13 +154,13 @@ export const Login = () => {
                                     }}
                                     onPress={handleSubmit}
                                 >
-                                    Iniciar sesión con Google
+                                    Regístrate con Google
                                 </Button>
                             </Grid>
                             <Grid xs={12} css={{ marginTop: "$10" }}>
                                 <p className="register-button">
-                                    ¿No tienes una cuenta?{" "}
-                                    <Link to="/registro">Regístrate</Link>
+                                    ¿Ya tienes una cuenta?{" "}
+                                    <Link to="/login">Inicia sesión</Link>
                                 </p>
                             </Grid>
                         </Grid.Container>
@@ -158,18 +183,19 @@ export const Login = () => {
                     objectFit="cover"
                     autoResize
                     height="100vh"
-                    width="100%"
+                    width="50vw"
                     className="login-image"
+                    css={{ position: "fixed" }}
                 />
-                <span className="login-image-credits">
+                <span className="login-image-credits-register">
                     Photo by:{" "}
                     <a
                         className="login-image-author"
-                        href="https://unsplash.com/es/fotos/zwd435-ewb4"
+                        href="https://unsplash.com/es/fotos/HBGYvOKXu8A"
                         target="_blank"
                         rel="noreferrer"
                     >
-                        Andrea De Santis
+                        Jason Leung
                     </a>
                 </span>
             </Grid>

@@ -1,0 +1,71 @@
+
+.login-logo{
+    width: 100%;
+    margin-top: 25px;
+    margin-bottom: 25px;
+}
+
+.login-logo .nextui-user-info > span{
+    font-size: 18px;
+}
+
+.login-form-container{
+    padding: 25px;
+    overflow-y: scroll;
+}
+
+.login-description{
+    margin-bottom: 25px;
+    color: var(--nextui-colors-inactivo);
+    font-size: 18px;
+    font-weight: 500;
+}
+
+/* .register-image-wrapper{
+    position: fixed;
+} */
+
+.login-image-credits-register{
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    padding: 10px;
+    color: #E7E7E7;
+    font-size: 12px;
+    font-weight: 600;
+    z-index: 10;
+}
+
+.login-image-author{
+    text-decoration: underline;
+}
+.password-forgotten-button{
+    font-size: 12px;
+    border-top: 10px;
+}
+
+.register-button{
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+}
+
+.login-footer{
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    /* font-weight: 600; */
+}
+
+@media (max-width: 959px) { 
+    /* En mobile, se oculta la imagen  */
+    .login-image-credits,.login-image{
+        display: none;
+    }
+    .login-footer{
+        position: relative;
+        text-align: center;
+    }
+}
