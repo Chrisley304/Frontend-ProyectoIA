@@ -6,13 +6,16 @@ import "./Registro.css";
 import { Link } from "react-router-dom";
 import { useGlobalState } from "../../App";
 import { useNavigate } from "react-router-dom";
-import "firebase/auth";
+// Firebase
 import { useFirebaseApp, useUser } from "reactfire";
 import { async } from "@firebase/util";
+import {getAuth, createUserWithEmailAndPassword} from "firebase/auth";
+// import { async } from "@firebase/util";
 
 export const Registro = () => {
 
-    // const firebase = useFirebaseApp();
+    const firebase = useFirebaseApp();
+    const auth = getAuth(firebase);
     // const user = useUser();
     const [isLogged, setisLogged] = useGlobalState("isLogged");
 
@@ -24,7 +27,6 @@ export const Registro = () => {
     const [userEmail, setUserEmail] = useState("");
     const [userPassword, setUserPassword] = useState("");
     const navigate = useNavigate();
-
     const { value, reset, bindings } = useInput("");
 
     const validateEmail = (value) => {
@@ -44,11 +46,18 @@ export const Registro = () => {
         };
     }, [value]);
 
-    const handleSubmit = () => {
-        // e.preventDefault();
-        setisLogged(true);
-        window.localStorage.setItem("userIsLogged", true);
-        navigate("/");
+    const handleEmailRegisterSubmit = () => {
+        createUserWithEmailAndPassword(auth,userEmail, userPassword).then((userCredential) => {
+            const user = userCredential.user;
+            console.log("user", user);
+            setisLogged(true);
+            // window.localStorage.setItem("userIsLogged", true);
+            navigate("/");
+        }).catch(async (error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.log("error", errorMessage);
+        });
     }
 
     // const handleLogin = async () => {
@@ -140,7 +149,7 @@ export const Registro = () => {
                                         marginLeft: "auto",
                                         marginRight: "auto",
                                     }}
-                                    onPress={handleSubmit2}
+                                    onPress={handleEmailRegisterSubmit}
                                 >
                                     Registrarse
                                 </Button>
@@ -152,7 +161,7 @@ export const Registro = () => {
                                         marginLeft: "auto",
                                         marginRight: "auto",
                                     }}
-                                    onPress={handleSubmit}
+                                    onPress={handleSubmit2}
                                 >
                                     Regístrate con Google
                                 </Button>

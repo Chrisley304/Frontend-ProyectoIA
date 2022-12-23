@@ -44,7 +44,7 @@ export const Sidebar = () =>{
                             label="Dashboard"
                             icon="dashboard"
                             iconType="solid"
-                            link="/"
+                            link="/dashboard"
                         />
                     </li>
                     <li>
