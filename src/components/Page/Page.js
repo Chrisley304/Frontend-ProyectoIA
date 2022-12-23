@@ -4,10 +4,7 @@ import { Grid } from "@nextui-org/react";
 import {MenuUsuario} from "../MenuUsuario/MenuUsuario"
 import { useGlobalState } from "../../App";
 
-export const Page = (props)=>{
-
-    let titulo = props.titulo;
-    let descripcion = props.descripcion;
+export const Page = ({titulo, descripcion, children})=>{
 
     const [navBarCollapsed] =
         useGlobalState("navBarCollapsed");
@@ -34,7 +31,7 @@ export const Page = (props)=>{
                     </Grid>
                 </Grid.Container>
             </header>
-            {props.children}
+            {children}
         </section>
     );
 }
