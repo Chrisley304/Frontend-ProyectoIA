@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import {Container, Input, useInput, Image, Grid, Text, User, Button } from "@nextui-org/react";
+import {Container, Input, useInput, Image, Grid, Text, User, Button, useTheme, Loading } from "@nextui-org/react";
 import loginImage from "../../assets/img/walle.jpg";
 import logoImage from "../../assets/img/logoIA.png"
 import "./Registro.css";
@@ -8,16 +8,23 @@ import { useGlobalState } from "../../App";
 import { useNavigate } from "react-router-dom";
 // Firebase
 import { useFirebaseApp, useUser } from "reactfire";
-import { async } from "@firebase/util";
-import {getAuth, createUserWithEmailAndPassword} from "firebase/auth";
+import { getDatabase } from "firebase/database";
+import {getAuth, createUserWithEmailAndPassword, updateProfile, signInWithPopup, GoogleAuthProvider} from "firebase/auth";
+import "boxicons";
 // import { async } from "@firebase/util";
 
 export const Registro = () => {
 
     const firebase = useFirebaseApp();
     const auth = getAuth(firebase);
+    const db = getDatabase(firebase);
+    const provider = new GoogleAuthProvider();
+
+    const {theme} = useTheme();
     // const user = useUser();
     const [isLogged, setisLogged] = useGlobalState("isLogged");
+    const [googleIsLoading, setGoogleIsLoading] = useState(false);
+
 
     useEffect(() => {
         window.localStorage.setItem("userIsLogged", isLogged);
@@ -26,30 +33,45 @@ export const Registro = () => {
 
     const [userEmail, setUserEmail] = useState("");
     const [userPassword, setUserPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [nombre, setNombre] = useState("");
+    const [apellido, setApellido] = useState("");
     const navigate = useNavigate();
-    const { value, reset, bindings } = useInput("");
+    const { reset, bindings } = useInput("");
 
     const validateEmail = (value) => {
         return value.match(/^[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}$/i);
     };
 
+    const validateValidPassword = (value) => {
+        return value.match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/);
+    };
+    
+    const validForm = () => {
+        return (helper.color === "success" && validateValidPassword(userPassword) && userPassword === confirmPassword);
+    }
+
     const helper = React.useMemo(() => {
-        if (!value)
+        if (!userEmail)
             return {
                 text: "",
                 color: "",
             };
-        const isValid = validateEmail(value);
+        const isValid = validateEmail(userEmail);
         return {
             text: isValid ? "Correct email" : "Enter a valid email",
             color: isValid ? "success" : "error",
         };
-    }, [value]);
+    }, [userEmail]);
 
-    const handleEmailRegisterSubmit = () => {
-        createUserWithEmailAndPassword(auth,userEmail, userPassword).then((userCredential) => {
+
+    const handleEmailRegisterSubmit = async () => {
+
+        await createUserWithEmailAndPassword(auth,userEmail, userPassword).then((userCredential) => {
             const user = userCredential.user;
-            console.log("user", user);
+            updateProfile(user,{
+                displayName: nombre + " " + apellido,
+            });
             setisLogged(true);
             // window.localStorage.setItem("userIsLogged", true);
             navigate("/");
@@ -60,12 +82,30 @@ export const Registro = () => {
         });
     }
 
-    // const handleLogin = async () => {
-    //     await firebase.auth().signInWithEmailAndPassword(userEmail, userPassword);
-    // };
-    const handleSubmit2 = () => {
-        setisLogged(false);
-    };
+    const handleGoogleSubmit = async () => {
+        setGoogleIsLoading(true);
+        await signInWithPopup(auth, provider)
+        .then((result) => {
+            // This gives you a Google Access Token. You can use it to access the Google API.
+            const credential = GoogleAuthProvider.credentialFromResult(result);
+            const token = credential.accessToken;
+            // The signed-in user info.
+            const user = result.user;
+            setisLogged(true);
+            // window.localStorage.setItem("userIsLogged", true);
+            navigate("/");
+            // ...
+        }).catch((error) => {
+            // Handle Errors here.
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            // The email of the user's account used.
+            const email = error.customData.email;
+            // The AuthCredential type that was used.
+            const credential = GoogleAuthProvider.credentialFromError(error);
+        });
+        setGoogleIsLoading(false);
+    }
 
     return (
         <Grid.Container>
@@ -91,6 +131,7 @@ export const Registro = () => {
                                     clearable
                                     label="Nombre (s)"
                                     width="100%"
+                                    onChange={(e) => setNombre(e.target.value)}
                                     placeholder="Ingresa tu nombre"
                                 />
                             </Grid>
@@ -99,6 +140,7 @@ export const Registro = () => {
                                     clearable
                                     label="Apellidos"
                                     width="100%"
+                                    onChange={(e) => setApellido(e.target.value)}
                                     placeholder="Ingresa tu nombre"
                                 />
                             </Grid>
@@ -157,13 +199,23 @@ export const Registro = () => {
                             <Grid xs={12} sm={6} css={{ marginTop: "$10" }}>
                                 <Button
                                     size="lg"
+                                    color={theme.colors.text.value}
+                                    bordered
+                                    icon={
+                                        <box-icon
+                                            type="logo"
+                                            name="google"
+                                            color={theme.colors.text.value}
+                                        ></box-icon>
+                                    }
                                     css={{
+                                        color: theme.colors.text.value,
                                         marginLeft: "auto",
                                         marginRight: "auto",
+                                        fontSize: "0.9rem",
                                     }}
-                                    onPress={handleSubmit2}
-                                >
-                                    Regístrate con Google
+                                    onPress={handleGoogleSubmit}>
+                                    {googleIsLoading? <Loading type="points" /> :"Continua con Google"}
                                 </Button>
                             </Grid>
                             <Grid xs={12} css={{ marginTop: "$10" }}>

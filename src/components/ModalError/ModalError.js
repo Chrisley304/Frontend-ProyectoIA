@@ -1,11 +1,12 @@
 import React from "react";
 import { Modal, Button, Text, Row } from "@nextui-org/react";
 
-export const ModalError = ({ textoError }) => {
+export const ModalError = ({ textoError, setError }) => {
     const [visible, setVisible] = React.useState(true);
 
     const closeHandler = () => {
         setVisible(false);
+        setError(false);
         // console.log("closed");
     };
 

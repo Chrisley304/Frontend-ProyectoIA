@@ -281,7 +281,7 @@ export const MetricasDistancia = () => {
                 </Grid.Container>
                 <LoadingModal visible={isLoading} />
                 {/* Si hay un error, se muestra el modal de error */}
-                {errorRespuesta && <ModalError textoError={textoError} />}
+                {errorRespuesta && <ModalError setError={setErrorRespuesta} textoError={textoError} />}
                 {/* Si no se generaron reglas, se muestra el error */}
                 {/* {respuestaNReglas === 0 && (
                     <ModalError textoError="La configuración ingresada no genero ninguna regla de asociación. Actualiza los valores e intenta de nuevo." />
