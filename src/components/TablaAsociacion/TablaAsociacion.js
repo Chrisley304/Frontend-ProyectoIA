@@ -8,7 +8,8 @@ export const TablaAsociacion = ({data,cols}) =>{
             compact
             aria-label="Tabla generada con las reglas de asociacion"
             css={{
-                height: "auto"
+                height: "500px",
+                maxW: "100%",
             }}
         >
             <Table.Header columns={cols}>
@@ -25,6 +26,13 @@ export const TablaAsociacion = ({data,cols}) =>{
                     </Table.Row>
                 )}
             </Table.Body>
+            <Table.Pagination
+                shadow
+                noMargin
+                align="start"
+                rowsPerPage={7}
+                onPageChange={(page) => console.log({ page })}
+            />
         </Table>
     );
 };

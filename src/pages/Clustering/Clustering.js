@@ -222,7 +222,7 @@ export const Clustering = () => {
                                         setMaxClusters(e.target.value)
                                     }
                                     label="Numero de máximo de clusters"
-                                    placeholder="Ej. 2"
+                                    placeholder="Ej. 4"
                                 />
                             </Grid>
                             <Grid xs={12}>
@@ -242,7 +242,7 @@ export const Clustering = () => {
                 </Grid>
                 <LoadingModal visible={isLoading} />
                 {/* Si hay un error, se muestra el modal de error */}
-                {errorRespuesta && <ModalError textoError={textoError} />}
+                {errorRespuesta && <ModalError setError={setErrorRespuesta} textoError={textoError} />}
                 {/* Si no se generaron reglas, se muestra el error */}
                 {/* {respuestaNReglas === 0 && (
                     <ModalError textoError="La configuración ingresada no genero ninguna regla de asociación. Actualiza los valores e intenta de nuevo." />
@@ -279,40 +279,13 @@ export const Clustering = () => {
                     </div>
                 </Grid> */}
                 <Grid xs={12}>
-                    <div className="resultados-container">
-                        <Card
-                            className="card-resultados"
-                            css={{ h: "100%", maxHeight: "500px" }}
-                        >
-                            <Card.Body className="card-resultados-body">
-                                <Text h3>Datos etiquetados con clusters:</Text>
-                                {salida <= 0 ? (
-                                    <div className="waiting-container">
-                                        <Text css={{ pb: "$10" }}>
-                                            Esperando entrada...
-                                        </Text>
-                                        {/* <Progress
-                                            indeterminated
-                                            value={50}
-                                            color="secondary"
-                                            status="secondary"
-                                        /> */}
-                                    </div>
-                                ) : (
-                                    <div>
-                                        {/* <Text>
-                                            Se generaron{" "}
-                                            <b>{respuestaNReglas}</b> reglas:
-                                        </Text> */}
-                                        <TablaAsociacion
-                                            data={dataTable}
-                                            cols={headerTable}
-                                        />
-                                    </div>
-                                )}
-                            </Card.Body>
-                        </Card>
-                    </div>
+                    {salida > 0 && <div className="resultados-container">
+                        <Text h3>Datos etiquetados con clusters:</Text>
+                        <TablaAsociacion
+                            data={dataTable}
+                            cols={headerTable}
+                        />
+                    </div>}
                 </Grid>
             </Grid.Container>
         </Page>

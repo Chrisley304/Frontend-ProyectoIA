@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import useDarkMode from "use-dark-mode";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import {Sidebar} from "./components/Sidebar/Sidebar"
 import {Dashboard} from "./pages/Dashboard/Dashboard"
 import {PageNotFound} from "./pages/PageNotFound/PageNotFound"
@@ -9,9 +9,14 @@ import { MetricasDistancia } from "./pages/MetricasDistancia/MetricasDistancia";
 import { Clustering } from "./pages/Clustering/Clustering";
 import { Configuracion } from "./pages/Configuracion/Configuracion";
 import { NextUIProvider, createTheme } from "@nextui-org/react";
+import { Registro } from "./pages/Registro/Registro";
 import { Footer } from "./components/Footer/Footer";
 import { Login } from "./pages/Login/Login";
 import { createGlobalState } from "react-hooks-global-state";
+import { PrivateRoute } from "./components/PrivateRoute/PrivateRoute";
+import { getAuth } from "firebase/auth";
+import { AuthProvider, useFirebaseApp } from "reactfire";
+
 
 const lightTheme = createTheme({
     type: "light", // it could be "light" or "dark"
@@ -76,6 +81,8 @@ export const { useGlobalState } = createGlobalState({
 function App() {
     const [isLogged, setisLogged] = useGlobalState("isLogged");
     const [navBarCollapsed, setNavBarCollapsed] = useGlobalState("navBarCollapsed");
+    const firebase = useFirebaseApp();
+    const auth = getAuth(firebase);
     const darkMode = useDarkMode(false);
     useEffect(() => {
         const loggedData = window.localStorage.getItem("userIsLogged");
@@ -99,38 +106,55 @@ function App() {
     }
 
     return (
-        <NextUIProvider
-        theme={darkMode.value? darkTheme: lightTheme}
-    >
-        <BrowserRouter>
-            {isLogged && <Sidebar />}
-            <Routes>
-                <Route path="/" element={<Dashboard />} />
-                <Route
-                    path="/reglas-asociacion"
-                    element={<ReglasAsociacion />}
-                />
-                <Route
-                    path="/metricas-distancia"
-                    element={<MetricasDistancia />}
-                />
-                <Route
-                    path="/clustering"
-                    element={<Clustering />}
-                />
-                <Route
-                    path="/configuracion"
-                    element={<Configuracion />}
-                />
-                <Route
-                    path="/login"
-                    element={<Login />}
-                />
-                <Route path="*" element={<PageNotFound />} />
-            </Routes>
-            {isLogged && <Footer/>}
-        </BrowserRouter>
-    </NextUIProvider>
+        <AuthProvider sdk={auth}>
+            <NextUIProvider theme={darkMode.value ? darkTheme : lightTheme}>
+                <BrowserRouter>
+                    {isLogged && <Sidebar />}
+                    <Routes>
+                        <Route
+                            path="/"
+                            element={
+                                isLogged ? (
+                                    <Navigate to="/dashboard" />
+                                ) : (
+                                    <Navigate to="/login" />
+                                )
+                            }
+                        />
+                        <Route
+                            path="/dashboard"
+                            element={
+                                <PrivateRoute forlogin={false}>
+                                    <Dashboard />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/reglas-asociacion"
+                            element={
+                                <PrivateRoute forlogin={false}>
+                                    <ReglasAsociacion />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/metricas-distancia"
+                            element={
+                                <PrivateRoute forlogin={false}>
+                                    <MetricasDistancia />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route path="/clustering" element={<PrivateRoute><Clustering /></PrivateRoute>} />
+                        <Route path="/configuracion" element={<PrivateRoute><Configuracion /></PrivateRoute>} />
+                        <Route path="/login" element={<PrivateRoute forlogin={true}><Login /></PrivateRoute>} />
+                        <Route path="/registro" element={<PrivateRoute forlogin={true}><Registro /></PrivateRoute>} />
+                        <Route path="*" element={<PageNotFound />} />
+                    </Routes>
+                    {isLogged && <Footer />}
+                </BrowserRouter>
+            </NextUIProvider>
+        </AuthProvider>
     );
 }
 

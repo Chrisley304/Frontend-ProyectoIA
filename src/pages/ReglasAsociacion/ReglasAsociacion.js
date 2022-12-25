@@ -223,10 +223,10 @@ export const ReglasAsociacion = () => {
                 {errorRespuesta && <ModalError textoError={textoError} />}
                 {/* Si no se generaron reglas, se muestra el error */}
                 {respuestaNReglas === 0 && (
-                    <ModalError textoError="La configuración ingresada no genero ninguna regla de asociación. Actualiza los valores e intenta de nuevo." />
+                    <ModalError setError={setErrorRespuesta} textoError="La configuración ingresada no genero ninguna regla de asociación. Actualiza los valores e intenta de nuevo." />
                 )}
                 <Grid xs={12} sm={8}>
-                    <div className="resultados-container">
+                    {respuestaNReglas > 0 && <div className="resultados-container">
                         <Card
                             className="card-resultados"
                             css={{
@@ -237,59 +237,27 @@ export const ReglasAsociacion = () => {
                         >
                             <Card.Body className="card-resultados-body">
                                 <Text h3>Frecuencia de los elementos:</Text>
-                                {respuestaNReglas <= 0 ? (
-                                    <div className="waiting-container">
-                                        <Text css={{ pb: "$10" }}>
-                                            Esperando entrada...
-                                        </Text>
-                                        {/* <Progress
-                                            indeterminated
-                                            value={50}
-                                            color="secondary"
-                                            status="secondary"
-                                        /> */}
-                                    </div>
-                                ) : (
-                                    <GraficaAsociacion x={Xtabla} y={Ytabla} />
-                                )}
+                                <GraficaAsociacion x={Xtabla} y={Ytabla} />
                             </Card.Body>
                         </Card>
-                    </div>
+                    </div>}
                 </Grid>
                 <Grid xs={12}>
                     <div className="resultados-container">
-                        <Card
-                            className="card-resultados"
-                            css={{ h: "100%", maxHeight: "500px" }}
-                        >
-                            <Card.Body className="card-resultados-body">
-                                <Text h3>Reglas generadas:</Text>
-                                {respuestaNReglas <= 0 ? (
-                                    <div className="waiting-container">
-                                        <Text css={{ pb: "$10" }}>
-                                            Esperando entrada...
-                                        </Text>
-                                        {/* <Progress
-                                            indeterminated
-                                            value={50}
-                                            color="secondary"
-                                            status="secondary"
-                                        /> */}
-                                    </div>
-                                ) : (
-                                    <div>
-                                        <Text>
-                                            Se generaron{" "}
-                                            <b>{respuestaNReglas}</b> reglas:
-                                        </Text>
-                                        <TablaAsociacion
-                                            data={dataTable}
-                                            cols={headerTable}
-                                        />
-                                    </div>
-                                )}
-                            </Card.Body>
-                        </Card>
+                            <div>
+                                {respuestaNReglas > 0 && 
+                                <>
+                                    <Text h3>Reglas generadas:</Text>
+                                    <Text>
+                                        Se generaron{" "}
+                                        <b>{respuestaNReglas}</b> reglas:
+                                    </Text>
+                                    <TablaAsociacion
+                                        data={dataTable}
+                                        cols={headerTable}
+                                    />
+                                </>}
+                            </div>
                     </div>
                 </Grid>
             </Grid.Container>

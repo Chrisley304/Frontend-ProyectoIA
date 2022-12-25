@@ -17,6 +17,7 @@ import archivoPrueba from '../../assets/csvPrueba/Hipoteca.csv'
 // Para usar la API de Heroku:
 const API = process.env.REACT_APP_API_URL;
 
+
 export const MetricasDistancia = () => {
     // Para el label del file
     const [filenameLabel, setFilenameLabel] = useState("");
@@ -128,7 +129,7 @@ export const MetricasDistancia = () => {
         }
         setIsLoading(false);
     };
-
+    
     return (
         <Page
             titulo="Métricas de distancia"
@@ -257,7 +258,7 @@ export const MetricasDistancia = () => {
                         </form>
                     </Grid>
                     <Grid xs={12} sm={4}>
-                        <div className="resultados-container">
+                        {resultadoDistancia && <div className="resultados-container">
                             <Card
                                 className="card-resultados"
                                 css={{
@@ -268,78 +269,35 @@ export const MetricasDistancia = () => {
                             >
                                 <Card.Body className="card-resultados-body">
                                     <Text h3>Distancia entre los objetos:</Text>
-                                    {resultadoDistancia ? (
-                                        <div className="waiting-container">
-                                            <Text size={20}>
-                                                {resultadoDistancia}
-                                            </Text>
-                                        </div>
-                                    ) : (
-                                        <div className="waiting-container">
-                                            <Text css={{ pb: "$10" }}>
-                                                Esperando entrada...
-                                            </Text>
-                                            {/* <Progress
-                                                indeterminated
-                                                value={50}
-                                                color="secondary"
-                                                status="secondary"
-                                            /> */}
-                                        </div>
-                                    )}
+                                    <div className="waiting-container">
+                                        <Text size={20}>
+                                            {resultadoDistancia}
+                                        </Text>
+                                    </div>
                                 </Card.Body>
                             </Card>
-                        </div>
+                        </div>}
                     </Grid>
                 </Grid.Container>
                 <LoadingModal visible={isLoading} />
                 {/* Si hay un error, se muestra el modal de error */}
-                {errorRespuesta && <ModalError textoError={textoError} />}
+                {errorRespuesta && <ModalError setError={setErrorRespuesta} textoError={textoError} />}
                 {/* Si no se generaron reglas, se muestra el error */}
                 {/* {respuestaNReglas === 0 && (
                     <ModalError textoError="La configuración ingresada no genero ninguna regla de asociación. Actualiza los valores e intenta de nuevo." />
                 )} */}
                 <Grid xs={12}>
-                    <div className="resultados-container">
-                        <Card
-                            className="card-resultados"
-                            css={{
-                                maxHeight: "700px",
-                                h: "100%",
-                                overflow: "scroll",
-                            }}
-                        >
-                            <Card.Body className="card-resultados-body">
-                                <Text h3>
-                                    Matriz de distancia de los elementos:
-                                </Text>
-                                {salida ? (
-                                    <div>
-                                        {/* <Text>
-                                            Se generaron{" "}
-                                            <b>{respuestaNReglas}</b> reglas:
-                                        </Text> */}
-                                        <TablaAsociacion
-                                            data={dataTable}
-                                            cols={headerTable}
-                                        />
-                                    </div>
-                                ) : (
-                                    <div className="waiting-container">
-                                        <Text css={{ pb: "$10" }}>
-                                            Esperando entrada...
-                                        </Text>
-                                        {/* <Progress
-                                            indeterminated
-                                            value={50}
-                                            color="secondary"
-                                            status="secondary"
-                                        /> */}
-                                    </div>
-                                )}
-                            </Card.Body>
-                        </Card>
-                    </div>
+                    {salida && <div className="resultados-container">
+                        <Text h3 css={{paddingTop:"$10"}}>
+                            Matriz de distancia de los elementos:
+                        </Text>
+                            <div>
+                                <TablaAsociacion
+                                    data={dataTable}
+                                    cols={headerTable}
+                                />
+                        </div>
+                    </div>}
                 </Grid>
             </Grid.Container>
         </Page>

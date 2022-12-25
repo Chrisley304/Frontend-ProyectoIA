@@ -4,10 +4,11 @@ import { Grid } from "@nextui-org/react";
 import {MenuUsuario} from "../MenuUsuario/MenuUsuario"
 import { useGlobalState } from "../../App";
 
-export const Page = (props)=>{
+export const Page = ({titulo, descripcion, showUser, children})=>{
 
-    let titulo = props.titulo;
-    let descripcion = props.descripcion;
+    if (showUser === undefined) {
+        showUser = true;
+    }
 
     const [navBarCollapsed] =
         useGlobalState("navBarCollapsed");
@@ -29,12 +30,12 @@ export const Page = (props)=>{
                             <p className="descripcion-seccion">{descripcion}</p>
                         </div>
                     </Grid>
-                    <Grid xs={3} sm={4} justify="flex-end" alignItems="top">
+                    {showUser && <Grid xs={3} sm={4} justify="flex-end" alignItems="top">
                         <MenuUsuario />
-                    </Grid>
+                    </Grid>}
                 </Grid.Container>
             </header>
-            {props.children}
+            {children}
         </section>
     );
 }
