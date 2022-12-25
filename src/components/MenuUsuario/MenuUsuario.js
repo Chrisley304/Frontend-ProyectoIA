@@ -4,15 +4,14 @@ import { Dropdown } from "@nextui-org/react";
 import 'boxicons'
 import { Usuario } from "../Usuario/Usuario";
 import { useNavigate } from "react-router-dom";
-import {
-    getAuth
-} from "firebase/auth";
 import { useGlobalState } from "../../App";
+import { getAuth, signOut } from "firebase/auth";
+import { useAuth } from "../../firebase-config";
 
 
 export const MenuUsuario = ()=>{
     const auth = getAuth();
-    const user = auth.currentUser;
+    const user = useAuth();
     const navigate = useNavigate();
     const [isLogged, setisLogged] = useGlobalState("isLogged");
     // const isLogged = auth.currentUser;

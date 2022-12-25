@@ -10,7 +10,10 @@ import { useFirebaseApp, useUser } from "reactfire";
 import {
     getAuth,
     signInWithEmailAndPassword,
-    signInWithPopup, GoogleAuthProvider
+    signInWithPopup,
+    GoogleAuthProvider,
+    browserLocalPersistence,
+    setPersistence,
 } from "firebase/auth";
 import { ModalError } from "../../components/ModalError/ModalError";
 import "boxicons";
@@ -56,42 +59,49 @@ export const Login = () => {
 
     const handleEmailLoginSubmit = async () => {
         setIsLoading(true);
-        await signInWithEmailAndPassword(auth, userEmail, userPassword)
-            .then((userCredential) => {
-                const user = userCredential.user;
-                console.log("user", user);
-                setisLogged(true);
-                // window.localStorage.setItem("userIsLogged", true);
-                navigate("/");
-            })
-            .catch(async (error) => {
-                setMensajeError("Credenciales incorrectas");
-                setError(true);
-            });
+        await setPersistence(auth, browserLocalPersistence).then(async () => {
+            signInWithEmailAndPassword(auth, userEmail, userPassword)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+                    console.log("user", user);
+                    setisLogged(true);
+                    // window.localStorage.setItem("userIsLogged", true);
+                    navigate("/");
+                })
+                .catch(async (error) => {
+                    setMensajeError("Credenciales incorrectas");
+                    setError(true);
+                });
+        });
         setIsLoading(false);
     };
 
     const handleGoogleSubmit = async () => {
         setGoogleIsLoading(true);
-        await signInWithPopup(auth, provider)
-        .then((result) => {
-            // This gives you a Google Access Token. You can use it to access the Google API.
-            const credential = GoogleAuthProvider.credentialFromResult(result);
-            const token = credential.accessToken;
-            // The signed-in user info.
-            const user = result.user;
-            setisLogged(true);
-            // window.localStorage.setItem("userIsLogged", true);
-            navigate("/");
-            // ...
-        }).catch((error) => {
-            // Handle Errors here.
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            // The email of the user's account used.
-            const email = error.customData.email;
-            // The AuthCredential type that was used.
-            const credential = GoogleAuthProvider.credentialFromError(error);
+        await setPersistence(auth, browserLocalPersistence).then(async () => {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    // This gives you a Google Access Token. You can use it to access the Google API.
+                    const credential =
+                        GoogleAuthProvider.credentialFromResult(result);
+                    const token = credential.accessToken;
+                    // The signed-in user info.
+                    const user = result.user;
+                    setisLogged(true);
+                    // window.localStorage.setItem("userIsLogged", true);
+                    navigate("/");
+                    // ...
+                })
+                .catch((error) => {
+                    // Handle Errors here.
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    // The email of the user's account used.
+                    const email = error.customData.email;
+                    // The AuthCredential type that was used.
+                    const credential =
+                        GoogleAuthProvider.credentialFromError(error);
+                });
         });
         setGoogleIsLoading(false);
     }

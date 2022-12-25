@@ -9,7 +9,15 @@ import { useNavigate } from "react-router-dom";
 // Firebase
 import { useFirebaseApp, useUser } from "reactfire";
 // import { getDatabase } from "firebase/database";
-import {getAuth, createUserWithEmailAndPassword, updateProfile, signInWithPopup, GoogleAuthProvider} from "firebase/auth";
+import {
+    getAuth,
+    createUserWithEmailAndPassword,
+    updateProfile,
+    signInWithPopup,
+    GoogleAuthProvider,
+    browserLocalPersistence,
+    setPersistence,
+} from "firebase/auth";
 import "boxicons";
 import { ModalError } from "../../components/ModalError/ModalError";
 // import { async } from "@firebase/util";
@@ -65,45 +73,50 @@ export const Registro = () => {
     
     const handleEmailRegisterSubmit = async () => {
         setEmailLoading(true);
-        await createUserWithEmailAndPassword(auth,userEmail, userPassword).then((userCredential) => {
-        }).catch(async (error) => {
-            setError(true);
-            const errorMessage = error.message;
-            console.log("error", errorMessage);
-        });
-        if (!error){
-            const user = auth.currentUser;
-            await updateProfile(user, {
-                displayName: nombre + " " + apellido,
+        await setPersistence(auth, browserLocalPersistence).then(async () => {
+            createUserWithEmailAndPassword(auth,userEmail, userPassword).then((userCredential) => {
+            }).catch(async (error) => {
+                setError(true);
+                const errorMessage = error.message;
+                console.log("error", errorMessage);
             });
-            setisLogged(true);
-            // window.localStorage.setItem("userIsLogged", true);
-            navigate("/");
-        }
+            if (!error){
+                const user = auth.currentUser;
+                await updateProfile(user, {
+                    displayName: nombre + " " + apellido,
+                });
+                setisLogged(true);
+                // window.localStorage.setItem("userIsLogged", true);
+                navigate("/");
+            }
+        });
         setEmailLoading(false);
     }
 
     const handleGoogleSubmit = async () => {
         setGoogleIsLoading(true);
-        await signInWithPopup(auth, provider)
-        .then((result) => {
-            // This gives you a Google Access Token. You can use it to access the Google API.
-            const credential = GoogleAuthProvider.credentialFromResult(result);
-            const token = credential.accessToken;
-            // The signed-in user info.
-            const user = result.user;
-            setisLogged(true);
-            // window.localStorage.setItem("userIsLogged", true);
-            navigate("/");
-            // ...
-        }).catch((error) => {
-            // Handle Errors here.
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            // The email of the user's account used.
-            const email = error.customData.email;
-            // The AuthCredential type that was used.
-            const credential = GoogleAuthProvider.credentialFromError(error);
+        await setPersistence(auth, browserLocalPersistence).then(async () => {
+            signInWithPopup(auth, provider)
+            .then((result) => {
+                // This gives you a Google Access Token. You can use it to access the Google API.
+                // const credential = GoogleAuthProvider.credentialFromResult(result);
+                // const token = credential.accessToken;
+                // The signed-in user info.
+                // const user = result.user;
+                setisLogged(true);
+                // window.localStorage.setItem("userIsLogged", true);
+                navigate("/");
+                // ...
+            }).catch((error) => {
+                // Handle Errors here.
+                // const errorCode = error.code;
+                const errorMessage = error.message;
+                // The email of the user's account used.
+                // const email = error.customData.email;
+                console.log("error", errorMessage);
+                // The AuthCredential type that was used.
+                // const credential = GoogleAuthProvider.credentialFromError(error);
+            });
         });
         setGoogleIsLoading(false);
     }

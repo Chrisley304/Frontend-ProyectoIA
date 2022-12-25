@@ -6,12 +6,11 @@ import imgCardAsociacion from "../../assets/img/card-1.jpg";
 import imgCardDistancia from "../../assets/img/card-distancia.jpg"
 import imgCardClustering from "../../assets/img/card-clustering.jpg";
 import githubLogo from "../../assets/img/GitHub-Mark-120px-plus.png";
-import { getAuth } from "firebase/auth";
+import { useAuth } from "../../firebase-config";
 
 export const Dashboard = ()=>{
 
-    const auth = getAuth();
-    const user = auth.currentUser;
+    const user = useAuth();
     const [nombreCompleto, setNombreCompleto] = useState("");
 
     useEffect(()=>{

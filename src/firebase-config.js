@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from "react";
-import { getAuth, onAuthStateChanged, updateProfile } from "firebase/auth";
+import { getAuth, onAuthStateChanged, browserLocalPersistence , setPersistence,} from "firebase/auth";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 
 // Your web app's Firebase configuration
@@ -18,6 +18,9 @@ export const firebaseConfig = {
 // Custom Hook
 export function useAuth() {
     const auth = getAuth();
+    (async () => {
+        await setPersistence(auth, browserLocalPersistence);
+    })();
     const [currentUser, setCurrentUser] = useState();
 
     useEffect(() => {
