@@ -4,7 +4,7 @@ import imagenChris from "../../assets/img/FondoRocas.png";
 import "./Usuario.css"
 import "boxicons";
 
-export const Usuario = ({nombreUsuario}) => {
+export const Usuario = ({nombreUsuario, urlImagen}) => {
 
     return (
         <div className="usuario-container">
@@ -16,7 +16,7 @@ export const Usuario = ({nombreUsuario}) => {
                 size="lg"
                 color="primary"
                 // description="chris@chrisley.dev"
-                src={imagenChris}
+                src={urlImagen}
             />
             <box-icon
                 name="chevron-down"

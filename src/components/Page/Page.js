@@ -8,7 +8,7 @@ export const Page = ({titulo, descripcion, showUser, children})=>{
 
     if (showUser === undefined) {
         showUser = true;
-    };
+    }
 
     const [navBarCollapsed] =
         useGlobalState("navBarCollapsed");

@@ -1,11 +1,11 @@
 import React  from 'react';
 import {Navigate} from "react-router-dom";
 
-export const PrivateRoute = ({children}) => {
+export const PrivateRoute = ({forlogin,children}) => {
     var isLogged = window.localStorage.getItem("userIsLogged");
     if (isLogged != null) {
         isLogged = ("true" === isLogged);
     }
 
-    return isLogged? children: <Navigate to="/login" />;
+    return !forlogin? isLogged? children: <Navigate to="/login" />: isLogged? <Navigate to="/dashboard" />: children;
 };

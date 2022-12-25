@@ -6,10 +6,19 @@ import imgCardAsociacion from "../../assets/img/card-1.jpg";
 import imgCardDistancia from "../../assets/img/card-distancia.jpg"
 import imgCardClustering from "../../assets/img/card-clustering.jpg";
 import githubLogo from "../../assets/img/GitHub-Mark-120px-plus.png";
+import { getAuth } from "firebase/auth";
 
 export const Dashboard = ()=>{
 
-    const nombreUsuario = "Christian";
+    const auth = getAuth();
+    const user = auth.currentUser;
+    var nombreCompleto ="";
+    var nombreUsuario = "";
+    if (user != null) {
+        nombreCompleto = user.displayName;
+        console.log(auth.currentUser);
+        nombreUsuario = nombreCompleto.split(" ")[0];
+    }
 
     return (
         <Page

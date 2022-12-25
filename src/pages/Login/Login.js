@@ -28,7 +28,7 @@ export const Login = () => {
 
     useEffect(() => {
         window.localStorage.setItem("userIsLogged", isLogged);
-        console.log("isLogged", isLogged);
+        // console.log("isLogged", isLogged);
     }, [isLogged]);
 
     const [userEmail, setUserEmail] = useState("");

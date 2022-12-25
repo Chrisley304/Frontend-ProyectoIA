@@ -124,7 +124,7 @@ function App() {
                         <Route
                             path="/dashboard"
                             element={
-                                <PrivateRoute>
+                                <PrivateRoute forlogin={false}>
                                     <Dashboard />
                                 </PrivateRoute>
                             }
@@ -132,7 +132,7 @@ function App() {
                         <Route
                             path="/reglas-asociacion"
                             element={
-                                <PrivateRoute>
+                                <PrivateRoute forlogin={false}>
                                     <ReglasAsociacion />
                                 </PrivateRoute>
                             }
@@ -140,15 +140,15 @@ function App() {
                         <Route
                             path="/metricas-distancia"
                             element={
-                                <PrivateRoute>
+                                <PrivateRoute forlogin={false}>
                                     <MetricasDistancia />
                                 </PrivateRoute>
                             }
                         />
                         <Route path="/clustering" element={<PrivateRoute><Clustering /></PrivateRoute>} />
                         <Route path="/configuracion" element={<PrivateRoute><Configuracion /></PrivateRoute>} />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/registro" element={<Registro />} />
+                        <Route path="/login" element={<PrivateRoute forlogin={true}><Login /></PrivateRoute>} />
+                        <Route path="/registro" element={<PrivateRoute forlogin={true}><Registro /></PrivateRoute>} />
                         <Route path="*" element={<PageNotFound />} />
                     </Routes>
                     {isLogged && <Footer />}
