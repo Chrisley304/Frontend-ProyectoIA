@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { Grid, Card, Link, Text } from "@nextui-org/react";
 import {Page} from "../../components/Page/Page";
 import { CardInicio } from "../../components/CardInicio/CardInicio";
@@ -12,14 +12,17 @@ export const Dashboard = ()=>{
 
     const auth = getAuth();
     const user = auth.currentUser;
-    var nombreCompleto ="";
+    const [nombreCompleto, setNombreCompleto] = useState("");
+
+    useEffect(()=>{
+        if(user){
+            setNombreCompleto(user.displayName);
+        }   
+    },[user]);
     var nombreUsuario = "";
-    if (user != null) {
-        nombreCompleto = user.displayName;
-        console.log(auth.currentUser);
+    if (nombreCompleto.length > 0){
         nombreUsuario = nombreCompleto.split(" ")[0];
     }
-
     return (
         <Page
             titulo={

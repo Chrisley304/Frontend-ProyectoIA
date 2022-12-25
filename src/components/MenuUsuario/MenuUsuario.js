@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import "./MenuUsuario.css"
 import { Dropdown } from "@nextui-org/react";
 import 'boxicons'
@@ -12,13 +12,19 @@ import { useGlobalState } from "../../App";
 
 export const MenuUsuario = ()=>{
     const auth = getAuth();
+    const user = auth.currentUser;
     const navigate = useNavigate();
     const [isLogged, setisLogged] = useGlobalState("isLogged");
     // const isLogged = auth.currentUser;
+    const [nombreCompleto, setNombreCompleto] = useState("");
+    const [photoURL, setPhotoURL] = useState("");
 
-    const nombreCompleto =
-        isLogged !== null ? auth.currentUser.displayName : "";
-    const profilePicture = isLogged !== null ? auth.currentUser.photoURL : "";
+    useEffect(() => {
+        if (user) {
+            setNombreCompleto(user.displayName);
+            setPhotoURL(user.photoURL);
+        }
+    }, [user]);
 
     const cerrarSesion = () => {
         auth.signOut();
@@ -51,7 +57,7 @@ export const MenuUsuario = ()=>{
             <Dropdown>
                 <Dropdown.Trigger>
                     <div className="dropdown-trigger-button">
-                        <Usuario nombreUsuario={nombreCompleto} urlImagen={profilePicture}/>
+                        <Usuario nombreUsuario={nombreCompleto} urlImagen={photoURL}/>
                     </div>
                 </Dropdown.Trigger>
                 <Dropdown.Menu selectionMode="single" onAction={seleccionMenu} color="primary" aria-label="User Actions">
