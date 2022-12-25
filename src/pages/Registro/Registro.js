@@ -79,8 +79,6 @@ export const Registro = () => {
                 setError(true);
                 const errorMessage = error.message;
                 console.log("error", errorMessage);
-            });
-            if (!error){
                 const user = auth.currentUser;
                 await updateProfile(user, {
                     displayName: nombre + " " + apellido,
@@ -88,7 +86,7 @@ export const Registro = () => {
                 setisLogged(true);
                 // window.localStorage.setItem("userIsLogged", true);
                 navigate("/");
-            }
+            });
         });
         setEmailLoading(false);
     }
