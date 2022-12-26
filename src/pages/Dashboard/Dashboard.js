@@ -5,11 +5,13 @@ import { CardInicio } from "../../components/CardInicio/CardInicio";
 import imgCardAsociacion from "../../assets/img/card-1.jpg";
 import imgCardDistancia from "../../assets/img/card-distancia.jpg"
 import imgCardClustering from "../../assets/img/card-clustering.jpg";
-import githubLogo from "../../assets/img/GitHub-Mark-120px-plus.png";
+import githubLightLogo from "../../assets/img/GitHub-Mark-120px-plus.png";
+import githubDarkLogo from "../../assets/img/github-mark-white.png";
 import { useAuth } from "../../firebase-config";
+import useDarkMode from "use-dark-mode";
 
 export const Dashboard = ()=>{
-
+    const darkMode = useDarkMode(false);
     const user = useAuth();
     const [nombreCompleto, setNombreCompleto] = useState("");
 
@@ -62,7 +64,7 @@ export const Dashboard = ()=>{
                         <Card.Header>
                             <img
                                 alt="github logo"
-                                src={githubLogo}
+                                src={ darkMode? githubDarkLogo : githubLightLogo}
                                 width="34px"
                                 height="34px"
                             />
