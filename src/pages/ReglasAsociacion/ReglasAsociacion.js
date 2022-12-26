@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Page } from "../../components/Page/Page";
-import { Input, Button, Grid, Card, Text } from "@nextui-org/react";
+import { Input, Button, Grid, Card, Text, useTheme } from "@nextui-org/react";
 import "./ReglasAsociacion.css";
 import { useRef } from "react";
 import Papa from "papaparse";
@@ -12,6 +12,8 @@ import { ModalError } from "../../components/ModalError/ModalError";
 import { TablaAsociacion } from "../../components/TablaAsociacion/TablaAsociacion";
 import { LoadingModal } from "../../components/LoadingModal/LoadingModal";
 import archivoPrueba from '../../assets/csvPrueba/movies.csv'
+import { CSVDownload, CSVLink } from "react-csv";
+import "boxicons";
 
 // Para utilizar el LOCALHOST:
 // const API = process.env.REACT_APP_LOCALHOST;
@@ -27,6 +29,7 @@ export const ReglasAsociacion = () => {
     const [respuestaNReglas, setRespuestaNReglas] = useState(-1);
     const [errorRespuesta, setErrorRespuesta] = useState(false);
     const [textoError, setTextoError] = useState("");
+    const [csvData, setCsvData] = useState("");
     const [dataTable, setDataTable] = useState();
     const [headerTable, setHeaderTable] = useState();
     const [Xtabla, setXtabla] = useState();
@@ -37,6 +40,7 @@ export const ReglasAsociacion = () => {
     const inputFile = useRef(null);
     // Reference for the form
     const form = useRef(null);
+    const { theme } = useTheme();
 
     // const asociacionesChart = new Chart(ctx);
 
@@ -86,6 +90,7 @@ export const ReglasAsociacion = () => {
             // console.log(infoRes);
             if (!("error" in infoRes)) {
                 const csvFile = infoRes["csv"];
+                setCsvData(csvFile);
                 setRespuestaNReglas(infoRes["nReglas"]);
                 var X = infoRes["datosX"];
                 var Y = infoRes["datosY"];
@@ -223,41 +228,70 @@ export const ReglasAsociacion = () => {
                 {errorRespuesta && <ModalError textoError={textoError} />}
                 {/* Si no se generaron reglas, se muestra el error */}
                 {respuestaNReglas === 0 && (
-                    <ModalError setError={setErrorRespuesta} textoError="La configuración ingresada no genero ninguna regla de asociación. Actualiza los valores e intenta de nuevo." />
+                    <ModalError
+                        setError={setErrorRespuesta}
+                        textoError="La configuración ingresada no genero ninguna regla de asociación. Actualiza los valores e intenta de nuevo."
+                    />
                 )}
                 <Grid xs={12} sm={8}>
-                    {respuestaNReglas > 0 && <div className="resultados-container">
-                        <Card
-                            className="card-resultados"
-                            css={{
-                                maxHeight: "700px",
-                                h: "100%",
-                                overflow: "scroll",
-                            }}
-                        >
-                            <Card.Body className="card-resultados-body">
-                                <Text h3>Frecuencia de los elementos:</Text>
-                                <GraficaAsociacion x={Xtabla} y={Ytabla} />
-                            </Card.Body>
-                        </Card>
-                    </div>}
+                    {respuestaNReglas > 0 && (
+                        <div className="resultados-container">
+                            <Card
+                                className="card-resultados"
+                                css={{
+                                    maxHeight: "700px",
+                                    h: "100%",
+                                    overflow: "scroll",
+                                }}
+                            >
+                                <Card.Body className="card-resultados-body">
+                                    <Text h3>Frecuencia de los elementos:</Text>
+                                    <GraficaAsociacion x={Xtabla} y={Ytabla} />
+                                </Card.Body>
+                            </Card>
+                        </div>
+                    )}
                 </Grid>
                 <Grid xs={12}>
                     <div className="resultados-container">
-                            <div>
-                                {respuestaNReglas > 0 && 
+                        <div>
+                            {respuestaNReglas > 0 && (
                                 <>
-                                    <Text h3>Reglas generadas:</Text>
+                                    <Grid.Container>
+                                        <Grid xs={10}>
+                                            <Text h3>Reglas generadas:</Text>
+                                        </Grid>
+                                        <Grid xs={2} className="boton-csv-asos">
+                                            <CSVLink
+                                                data={csvData}
+                                                target="_blank"
+                                                filename={
+                                                    "reglas_asociacion_" +
+                                                    filenameLabel.split(
+                                                        "."
+                                                    )[0] +
+                                                    ".csv"
+                                                }
+                                            >
+                                                Descargar CSV <box-icon
+                                                    type="solid"
+                                                    name="download"
+                                                    color={theme.colors.text.value}
+                                                ></box-icon>
+                                            </CSVLink>
+                                        </Grid>
+                                    </Grid.Container>
                                     <Text>
-                                        Se generaron{" "}
-                                        <b>{respuestaNReglas}</b> reglas:
+                                        Se generaron <b>{respuestaNReglas}</b>{" "}
+                                        reglas:
                                     </Text>
                                     <TablaAsociacion
                                         data={dataTable}
                                         cols={headerTable}
                                     />
-                                </>}
-                            </div>
+                                </>
+                            )}
+                        </div>
                     </div>
                 </Grid>
             </Grid.Container>
