@@ -45,6 +45,7 @@ export const Sidebar = () =>{
                             icon="dashboard"
                             iconType="solid"
                             link="/dashboard"
+                            setNavCollapse={setNavBarCollapsed}
                         />
                     </li>
                     <li>
@@ -53,6 +54,7 @@ export const Sidebar = () =>{
                             icon="group"
                             iconType="solid"
                             link="/reglas-asociacion"
+                            setNavCollapse={setNavBarCollapsed}
                         />
                     </li>
                     <li>
@@ -61,6 +63,7 @@ export const Sidebar = () =>{
                             label="Métricas de distancia"
                             icon="ruler"
                             iconType="solid"
+                            setNavCollapse={setNavBarCollapsed}
                         />
                     </li>
                     <li>
@@ -69,6 +72,7 @@ export const Sidebar = () =>{
                             label="Clustering"
                             icon="objects-vertical-bottom"
                             iconType="solid"
+                            setNavCollapse={setNavBarCollapsed}
                         />
                     </li>
                     <li>
@@ -77,6 +81,7 @@ export const Sidebar = () =>{
                             label="Configuración"
                             icon="cog"
                             iconType="solid"
+                            setNavCollapse={setNavBarCollapsed}
                         />
                     </li>
                 </ul>

@@ -60,7 +60,7 @@ export const Login = () => {
     const handleEmailLoginSubmit = async () => {
         setIsLoading(true);
         await setPersistence(auth, browserLocalPersistence).then(async () => {
-            signInWithEmailAndPassword(auth, userEmail, userPassword)
+            await signInWithEmailAndPassword(auth, userEmail, userPassword)
                 .then((userCredential) => {
                     const user = userCredential.user;
                     console.log("user", user);
@@ -79,7 +79,7 @@ export const Login = () => {
     const handleGoogleSubmit = async () => {
         setGoogleIsLoading(true);
         await setPersistence(auth, browserLocalPersistence).then(async () => {
-            signInWithPopup(auth, provider)
+            await signInWithPopup(auth, provider)
                 .then((result) => {
                     // This gives you a Google Access Token. You can use it to access the Google API.
                     const credential =
@@ -182,7 +182,7 @@ export const Login = () => {
                                         onPress={handleEmailLoginSubmit}
                                     >
                                         {isLoading ? (
-                                            <Loading type="points" />
+                                            <Loading type="points" color="white" />
                                         ) : (
                                             "Iniciar sesión"
                                         )}

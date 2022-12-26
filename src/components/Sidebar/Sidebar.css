@@ -6,7 +6,8 @@
     width: 275px;
     padding: 10px 14px;
     background: var(--nextui-colors-sidebar);
-    transition: var(--tran-general);
+    overflow-y: scroll;
+    /* transition: var(--tran-general); */
     z-index: 100;
 }
 

@@ -21,3 +21,10 @@
     margin-top: auto;
     margin-bottom: auto;
 }
+
+.boton-csv-asos a{
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    color: var(--nextui-colors-text);
+}
