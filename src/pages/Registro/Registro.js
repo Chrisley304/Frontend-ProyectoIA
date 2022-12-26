@@ -74,7 +74,7 @@ export const Registro = () => {
     const handleEmailRegisterSubmit = async () => {
         setEmailLoading(true);
         await setPersistence(auth, browserLocalPersistence).then(async () => {
-            createUserWithEmailAndPassword(auth,userEmail, userPassword).then((userCredential) => {
+            await createUserWithEmailAndPassword(auth,userEmail, userPassword).then((userCredential) => {
             }).catch(async (error) => {
                 setError(true);
                 const errorMessage = error.message;
@@ -94,7 +94,7 @@ export const Registro = () => {
     const handleGoogleSubmit = async () => {
         setGoogleIsLoading(true);
         await setPersistence(auth, browserLocalPersistence).then(async () => {
-            signInWithPopup(auth, provider)
+            await signInWithPopup(auth, provider)
             .then((result) => {
                 // This gives you a Google Access Token. You can use it to access the Google API.
                 // const credential = GoogleAuthProvider.credentialFromResult(result);

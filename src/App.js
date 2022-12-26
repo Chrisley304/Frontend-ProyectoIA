@@ -37,10 +37,13 @@ const lightTheme = createTheme({
             sidebar: "#FFFFFF",
             hover: "#F4F0FF",
             inactivo: "#8D8D8D",
-            text: "#000000"
+            text: "#000000",
         },
         space: {},
         fonts: {},
+        fontSizes: {
+            sm: "16px",
+        },
     },
 });
 
@@ -70,6 +73,9 @@ const darkTheme = createTheme({
         },
         space: {},
         fonts: {},
+        fontSizes: {
+            sm: "16px",
+        },
     },
 });
 
@@ -83,7 +89,7 @@ function App() {
     const [navBarCollapsed, setNavBarCollapsed] = useGlobalState("navBarCollapsed");
     const firebase = useFirebaseApp();
     const auth = getAuth(firebase);
-    const darkMode = useDarkMode(false);
+    const darkMode = useDarkMode(false, {storageKey: null});
     useEffect(() => {
         const loggedData = window.localStorage.getItem("userIsLogged");
         const collapsedData = window.localStorage.getItem("navbarCollapse");
