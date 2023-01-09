@@ -308,11 +308,17 @@ export const Clustering = () => {
                                         data={csvData}
                                         target="_blank"
                                         filename={
-                                            "matrizdistancias_" +
-                                            metricaSeleccionada +
-                                            "_" +
-                                            filenameLabel.split(".")[0] +
-                                            ".csv"
+                                            "clustering_" +
+                                                +tipoClustering +
+                                                "_" +
+                                                tipoClustering ===
+                                            "particional"
+                                                ? filenameLabel.split(".")[0] +
+                                                  ".csv"
+                                                : metricaSeleccionada +
+                                                  "_" +
+                                                  filenameLabel.split(".")[0] +
+                                                  ".csv"
                                         }
                                     >
                                         Descargar CSV{" "}
