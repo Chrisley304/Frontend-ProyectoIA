@@ -4,10 +4,10 @@ import {
     Input,
     Button,
     Grid,
-    Card,
     Text,
     Radio,
     Container,
+    useTheme,
 } from "@nextui-org/react";
 import "./MetricasDistancia.css";
 import { useRef } from "react";
@@ -17,6 +17,7 @@ import { TablaAsociacion } from "../../components/TablaAsociacion/TablaAsociacio
 import { LoadingModal } from "../../components/LoadingModal/LoadingModal";
 import archivoPrueba from "../../assets/csvPrueba/Hipoteca.csv";
 import SeleccionCaracteristicas from "../../components/SeleccionCaracteristicas/SeleccionCaracteristicas";
+import { CSVLink } from "react-csv";
 
 // Para utilizar el LOCALHOST:
 const API = process.env.REACT_APP_LOCALHOST;
@@ -34,13 +35,12 @@ export const MetricasDistancia = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [salida, setSalida] = useState(false);
     const [mapaCalor, setMapaCalor] = useState(null);
-    const [objetoA, setObjetoA] = useState();
-    const [objetoB, setObjetoB] = useState();
     const [columnasDataSet, setColumnasDataSet] = useState([]);
     const [seleccionCaracteristicas, setSeleccionCaracteristicas] = useState(
         []
     );
-    const [resultadoDistancia, setResultadoDistancia] = useState();
+    const [csvData, setCsvData] = useState("");
+    const { theme } = useTheme();
     // Reference for the invisible file input, to modify the beauty one
     const inputFile = useRef(null);
     // Reference for the form
@@ -128,6 +128,7 @@ export const MetricasDistancia = () => {
             }
             // console.log(tableHeaders);
             // console.log(parsedData);
+            setCsvData(csvFile);
             setDataTable(parsedData);
             setHeaderTable(tableHeaders);
             setSalida(true);
@@ -248,12 +249,37 @@ export const MetricasDistancia = () => {
                     )}
                     {/* Se muestra el mapa de calor del archivo */}
 
-                    <Grid xs={12}>
+                    <Grid xs={12} css={{ paddingTop: "$15" }}>
                         {salida && (
                             <div className="resultados-container">
-                                <Text h3 css={{ paddingTop: "$10" }}>
-                                    Matriz de distancia de los elementos:
-                                </Text>
+                                <Grid.Container>
+                                    <Grid xs={10}>
+                                        <Text h3>
+                                            Matriz de distancia de los
+                                            elementos:
+                                        </Text>
+                                    </Grid>
+                                    <Grid xs={2} className="boton-csv-asos">
+                                        <CSVLink
+                                            data={csvData}
+                                            target="_blank"
+                                            filename={
+                                                "matrizdistancias_" +
+                                                metricaSeleccionada +
+                                                "_" +
+                                                filenameLabel.split(".")[0] +
+                                                ".csv"
+                                            }
+                                        >
+                                            Descargar CSV{" "}
+                                            <box-icon
+                                                type="solid"
+                                                name="download"
+                                                color={theme.colors.text.value}
+                                            ></box-icon>
+                                        </CSVLink>
+                                    </Grid>
+                                </Grid.Container>
                                 <div>
                                     <TablaAsociacion
                                         data={dataTable}

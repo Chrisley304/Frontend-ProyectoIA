@@ -11,8 +11,8 @@ import { GraficaAsociacion } from "../../components/GraficaAsociacion/GraficaAso
 import { ModalError } from "../../components/ModalError/ModalError";
 import { TablaAsociacion } from "../../components/TablaAsociacion/TablaAsociacion";
 import { LoadingModal } from "../../components/LoadingModal/LoadingModal";
-import archivoPrueba from '../../assets/csvPrueba/movies.csv'
-import { CSVDownload, CSVLink } from "react-csv";
+import archivoPrueba from "../../assets/csvPrueba/movies.csv";
+import { CSVLink } from "react-csv";
 import "boxicons";
 
 // Para utilizar el LOCALHOST:
@@ -117,13 +117,13 @@ export const ReglasAsociacion = () => {
                 setErrorRespuesta(true);
             }
         } catch (error) {
-            setTextoError("Error al momento de realizar la petición al servidor Backend, si el problema persiste envia un correo a chris@chrisley.dev");
+            setTextoError(
+                "Error al momento de realizar la petición al servidor Backend, si el problema persiste envia un correo a chris@chrisley.dev"
+            );
             setErrorRespuesta(true);
         }
         setIsLoading(false);
     };
-
-    
 
     return (
         <Page
@@ -273,10 +273,13 @@ export const ReglasAsociacion = () => {
                                                     ".csv"
                                                 }
                                             >
-                                                Descargar CSV <box-icon
+                                                Descargar CSV{" "}
+                                                <box-icon
                                                     type="solid"
                                                     name="download"
-                                                    color={theme.colors.text.value}
+                                                    color={
+                                                        theme.colors.text.value
+                                                    }
                                                 ></box-icon>
                                             </CSVLink>
                                         </Grid>

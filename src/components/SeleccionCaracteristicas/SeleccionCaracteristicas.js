@@ -1,5 +1,5 @@
 import React from "react";
-import { Card, Text, Checkbox, Button } from "@nextui-org/react";
+import { Card, Text, Checkbox } from "@nextui-org/react";
 
 export default function SeleccionCaracteristicas({
     columnasDataSet,
