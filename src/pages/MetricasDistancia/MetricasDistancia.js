@@ -1,22 +1,27 @@
 import React, { useState } from "react";
 import { Page } from "../../components/Page/Page";
-import { Input, Button, Grid, Card, Text, Radio } from "@nextui-org/react";
+import {
+    Input,
+    Button,
+    Grid,
+    Card,
+    Text,
+    Radio,
+    Container,
+} from "@nextui-org/react";
 import "./MetricasDistancia.css";
 import { useRef } from "react";
 import Papa from "papaparse";
-// import DataTable from "react-data-table-component";
-// import { CsvToHtmlTable } from "react-csv-to-table";
-// import { TablaAsociacion } from "../../components/TablaAsociacion/TablaAsociacion";
 import { ModalError } from "../../components/ModalError/ModalError";
 import { TablaAsociacion } from "../../components/TablaAsociacion/TablaAsociacion";
 import { LoadingModal } from "../../components/LoadingModal/LoadingModal";
-import archivoPrueba from '../../assets/csvPrueba/Hipoteca.csv'
+import archivoPrueba from "../../assets/csvPrueba/Hipoteca.csv";
+import SeleccionCaracteristicas from "../../components/SeleccionCaracteristicas/SeleccionCaracteristicas";
 
 // Para utilizar el LOCALHOST:
-// const API = process.env.REACT_APP_LOCALHOST;
+const API = process.env.REACT_APP_LOCALHOST;
 // Para usar la API de Heroku:
-const API = process.env.REACT_APP_API_URL;
-
+// const API = process.env.REACT_APP_API_URL;
 
 export const MetricasDistancia = () => {
     // Para el label del file
@@ -28,10 +33,14 @@ export const MetricasDistancia = () => {
     const [headerTable, setHeaderTable] = useState();
     const [isLoading, setIsLoading] = useState(false);
     const [salida, setSalida] = useState(false);
+    const [mapaCalor, setMapaCalor] = useState(null);
     const [objetoA, setObjetoA] = useState();
     const [objetoB, setObjetoB] = useState();
+    const [columnasDataSet, setColumnasDataSet] = useState([]);
+    const [seleccionCaracteristicas, setSeleccionCaracteristicas] = useState(
+        []
+    );
     const [resultadoDistancia, setResultadoDistancia] = useState();
-
     // Reference for the invisible file input, to modify the beauty one
     const inputFile = useRef(null);
     // Reference for the form
@@ -45,7 +54,6 @@ export const MetricasDistancia = () => {
         var filename = filepath[filepath.length - 1];
         setFilenameLabel(filename);
     };
-
     const validateFileExt = (value) => {
         return value.match(/.\.csv$/);
     };
@@ -66,14 +74,37 @@ export const MetricasDistancia = () => {
 
     const isFormValid =
         metricaSeleccionada &&
+        seleccionCaracteristicas.length > 0 &&
         validateFileExt(filenameLabel);
-    const isFormValidForm2 =
-        metricaSeleccionada && validateFileExt(filenameLabel) && objetoA && objetoB && objetoA !== objetoB;
+
+    const handleFileAnalisys = async () => {
+        setIsLoading(true);
+
+        const formData = new FormData(form.current);
+        const res = await fetch(API + "analisis-datos", {
+            method: "POST",
+            body: formData,
+        });
+        const infoRes = await res.json();
+
+        if (!("error" in infoRes)) {
+            // Se recibe los bytes de la imagen
+            const image_data = infoRes["image_data"];
+            const columnas = infoRes["columnas"];
+            setMapaCalor(image_data);
+            setColumnasDataSet(columnas);
+        } else {
+            setTextoError(infoRes["error"]);
+            setErrorRespuesta(true);
+        }
+        setIsLoading(false);
+    };
 
     const handleSubmitMatriz = async () => {
         setIsLoading(true);
-        
+
         const formData = new FormData(form.current);
+        formData.append("seleccionCaracteristicas", seleccionCaracteristicas);
         const res = await fetch(
             API + "matriz-distancia/" + metricaSeleccionada,
             {
@@ -83,13 +114,13 @@ export const MetricasDistancia = () => {
         );
         const infoRes = await res.json();
         // console.log(infoRes);
-        if (!('error' in infoRes)){
+        if (!("error" in infoRes)) {
             const csvFile = infoRes["csv"];
             const parsedCsv = Papa.parse(csvFile, { header: true });
             const parsedData = parsedCsv?.data;
             var tableHeaders = [];
-            var arrayHead= Object.keys(parsedData[0]);
-            for(var i in arrayHead){
+            var arrayHead = Object.keys(parsedData[0]);
+            for (var i in arrayHead) {
                 tableHeaders.push({
                     key: arrayHead[i],
                     label: arrayHead[i].toUpperCase(),
@@ -100,36 +131,14 @@ export const MetricasDistancia = () => {
             setDataTable(parsedData);
             setHeaderTable(tableHeaders);
             setSalida(true);
-        }else{
-            setTextoError(infoRes['error']);
+        } else {
+            setTextoError(infoRes["error"]);
             setErrorRespuesta(true);
             setSalida(false);
         }
         setIsLoading(false);
     };
 
-    const handleSubmitDistObj = async () => {
-        setIsLoading(true);
-        
-        const formData = new FormData(form.current);
-        const res = await fetch(
-            API + "distancia-objetos/" + metricaSeleccionada,
-            {
-                method: "POST",
-                body: formData,
-            }
-        );
-        const infoRes = await res.json();
-        // console.log(infoRes);
-        if (!('error' in infoRes)){
-            setResultadoDistancia(infoRes["distancia"]);
-        }else{
-            setTextoError(infoRes['error']);
-            setErrorRespuesta(true);
-        }
-        setIsLoading(false);
-    };
-    
     return (
         <Page
             titulo="Métricas de distancia"
@@ -137,169 +146,125 @@ export const MetricasDistancia = () => {
                 <div>
                     <p>
                         En esta sección de la app puedes obtener las metricas de
-                        distancia de un dataset que ingreses en CSV, utilizando el
-                        algoritmo que desees.
+                        distancia de un dataset que ingreses en CSV, utilizando
+                        el algoritmo que desees.
                     </p>
                     <p>
-                        Si no tienes un dataset para utilizar el agoritmo, obten uno dando click <a href={archivoPrueba}>aquí</a>.
+                        Si no tienes un dataset para utilizar el agoritmo, obten
+                        uno dando click <a href={archivoPrueba}>aquí</a>.
                     </p>
                 </div>
             }
         >
-            <Grid.Container gap={2}>
+            <form ref={form} className="form-container">
                 <Grid.Container>
-                    <Grid xs={12} sm={8}>
-                        <form
-                            ref={form}
-                            // onSubmit={handleSubmit}
-                            className="form-container"
-                        >
-                            <Grid xs={12} sm={6}>
-                                <Grid.Container gap={2}>
-                                    <Grid xs={12}>
-                                        <input
-                                            ref={inputFile}
-                                            type="file"
-                                            name="file"
-                                            style={{ display: "none" }}
-                                            onChange={handleFileInput}
-                                        ></input>
-                                        <Input
-                                            readOnly
-                                            labelLeft="Archivo"
-                                            className="boton-archivo"
-                                            initialValue={filenameLabel}
-                                            helperColor={fileHelper.color}
-                                            status={fileHelper.color}
-                                            helperText={fileHelper.text}
-                                            label="Ingresa un archivo .csv a analizar"
-                                            onClick={selectFile}
-                                        />
-                                    </Grid>
-                                    <Grid xs={12}>
-                                        <Radio.Group
-                                            label="Métrica a utilizar"
-                                            value={metricaSeleccionada}
-                                            onChange={setMetricaSeleccionada}
-                                        >
-                                            <Radio size="sm" value="euclidean">
-                                                Métrica Euclidiana
-                                            </Radio>
-                                            <Radio size="sm" value="chebyshev">
-                                                Métrica Chebyshev
-                                            </Radio>
-                                            <Radio size="sm" value="cityblock">
-                                                Métrica de Manhattan (City
-                                                block)
-                                            </Radio>
-                                        </Radio.Group>
-                                    </Grid>
-                                    <Grid xs={12}>
-                                        <Button
-                                            flat
-                                            size={"lg"}
-                                            color="primary"
-                                            disabled={!isFormValid}
-                                            type="button"
-                                            onPress={handleSubmitMatriz}
-                                            value="matriz-distancias"
-                                        >
-                                            Obtener matriz de distancia
-                                        </Button>
-                                    </Grid>
-                                </Grid.Container>
-                            </Grid>
-                            <Grid xs={6}>
-                                <Grid.Container gap={2}>
-                                    <Grid xs={12}>
-                                        <Input
-                                            helperText=""
-                                            type="number"
-                                            step={1}
-                                            min={0}
-                                            name="objeto1"
-                                            label="Objeto A:"
-                                            onChange={(e) =>
-                                                setObjetoA(e.target.value)
-                                            }
-                                            placeholder="Ej. 1"
-                                        />
-                                    </Grid>
-                                    <Grid xs={12}>
-                                        <Input
-                                            helperText=""
-                                            type="number"
-                                            step={1}
-                                            min={0}
-                                            name="objeto2"
-                                            label="Objeto B:"
-                                            onChange={(e) =>
-                                                setObjetoB(e.target.value)
-                                            }
-                                            placeholder="Ej. 2"
-                                        />
-                                    </Grid>
-
-                                    <Grid xs={12}>
-                                        <Button
-                                            flat
-                                            size={"lg"}
-                                            color="secondary"
-                                            disabled={!isFormValidForm2}
-                                            type="button"
-                                            onPress={handleSubmitDistObj}
-                                            value="distancia-objetos"
-                                        >
-                                            Distancia entre elementos
-                                        </Button>
-                                    </Grid>
-                                </Grid.Container>
-                            </Grid>
-                        </form>
-                    </Grid>
                     <Grid xs={12} sm={4}>
-                        {resultadoDistancia && <div className="resultados-container">
-                            <Card
-                                className="card-resultados"
-                                css={{
-                                    maxHeight: "700px",
-                                    h: "100%",
-                                    overflow: "scroll",
-                                }}
+                        <Container>
+                            <input
+                                ref={inputFile}
+                                type="file"
+                                name="file"
+                                style={{ display: "none" }}
+                                onChange={handleFileInput}
+                            ></input>
+                            <Input
+                                readOnly
+                                labelLeft="Archivo"
+                                className="boton-archivo"
+                                initialValue={filenameLabel}
+                                helperColor={fileHelper.color}
+                                status={fileHelper.color}
+                                helperText={fileHelper.text}
+                                label="Ingresa un archivo .csv a analizar"
+                                onClick={selectFile}
+                            />
+                            <Button
+                                flat
+                                size={"lg"}
+                                color="primary"
+                                css={{ mt: "$10" }}
+                                disabled={fileHelper.color !== "success"}
+                                type="button"
+                                onPress={handleFileAnalisys}
+                                value="matriz-distancias"
                             >
-                                <Card.Body className="card-resultados-body">
-                                    <Text h3>Distancia entre los objetos:</Text>
-                                    <div className="waiting-container">
-                                        <Text size={20}>
-                                            {resultadoDistancia}
-                                        </Text>
-                                    </div>
-                                </Card.Body>
-                            </Card>
-                        </div>}
+                                Analizar archivo
+                            </Button>
+                        </Container>
+                    </Grid>
+                    <Grid xs={12} sm={8}>
+                        {mapaCalor && (
+                            <div className="resultados-container">
+                                <SeleccionCaracteristicas
+                                    columnasDataSet={columnasDataSet}
+                                    mapaCalor={mapaCalor}
+                                    setSeleccionCaracteristicas={
+                                        setSeleccionCaracteristicas
+                                    }
+                                />
+                            </div>
+                        )}
+                    </Grid>
+                    {mapaCalor && (
+                        <Grid xs={12} sm={4}>
+                            <Container css={{ mt: "$10" }}>
+                                <Radio.Group
+                                    label="Métrica a utilizar"
+                                    value={metricaSeleccionada}
+                                    onChange={setMetricaSeleccionada}
+                                >
+                                    <Radio size="sm" value="euclidean">
+                                        Métrica Euclidiana
+                                    </Radio>
+                                    <Radio size="sm" value="chebyshev">
+                                        Métrica Chebyshev
+                                    </Radio>
+                                    <Radio size="sm" value="cityblock">
+                                        Métrica de Manhattan (City block)
+                                    </Radio>
+                                </Radio.Group>
+                                <Button
+                                    flat
+                                    size={"lg"}
+                                    color="primary"
+                                    disabled={!isFormValid}
+                                    type="button"
+                                    css={{ mt: "$10" }}
+                                    onPress={handleSubmitMatriz}
+                                    value="matriz-distancias"
+                                >
+                                    Obtener matriz de distancia
+                                </Button>
+                            </Container>
+                        </Grid>
+                    )}
+                    <LoadingModal visible={isLoading} />
+                    {/* Si hay un error, se muestra el modal de error */}
+                    {errorRespuesta && (
+                        <ModalError
+                            setError={setErrorRespuesta}
+                            textoError={textoError}
+                        />
+                    )}
+                    {/* Se muestra el mapa de calor del archivo */}
+
+                    <Grid xs={12}>
+                        {salida && (
+                            <div className="resultados-container">
+                                <Text h3 css={{ paddingTop: "$10" }}>
+                                    Matriz de distancia de los elementos:
+                                </Text>
+                                <div>
+                                    <TablaAsociacion
+                                        data={dataTable}
+                                        cols={headerTable}
+                                    />
+                                </div>
+                            </div>
+                        )}
                     </Grid>
                 </Grid.Container>
-                <LoadingModal visible={isLoading} />
-                {/* Si hay un error, se muestra el modal de error */}
-                {errorRespuesta && <ModalError setError={setErrorRespuesta} textoError={textoError} />}
-                {/* Si no se generaron reglas, se muestra el error */}
-                {/* {respuestaNReglas === 0 && (
-                    <ModalError textoError="La configuración ingresada no genero ninguna regla de asociación. Actualiza los valores e intenta de nuevo." />
-                )} */}
-                <Grid xs={12}>
-                    {salida && <div className="resultados-container">
-                        <Text h3 css={{paddingTop:"$10"}}>
-                            Matriz de distancia de los elementos:
-                        </Text>
-                            <div>
-                                <TablaAsociacion
-                                    data={dataTable}
-                                    cols={headerTable}
-                                />
-                        </div>
-                    </div>}
-                </Grid>
-            </Grid.Container>
+            </form>
         </Page>
     );
 };
