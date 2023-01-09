@@ -1,7 +1,18 @@
-import React, {useState, useEffect} from "react";
-import {Container, Input, useInput, Image, Grid, Text, User, Button, useTheme, Loading } from "@nextui-org/react";
+import React, { useState, useEffect } from "react";
+import {
+    Container,
+    Input,
+    useInput,
+    Image,
+    Grid,
+    Text,
+    User,
+    Button,
+    useTheme,
+    Loading,
+} from "@nextui-org/react";
 import loginImage from "../../assets/img/login-background.jpg";
-import logoImage from "../../assets/img/logoIA.png"
+import logoImage from "../../assets/img/logoIA.png";
 import "./Login.css";
 import { Link } from "react-router-dom";
 import { useGlobalState } from "../../App";
@@ -104,7 +115,7 @@ export const Login = () => {
                 });
         });
         setGoogleIsLoading(false);
-    }
+    };
 
     // const handleLogin = async () => {
     //     await firebase.auth().signInWithEmailAndPassword(userEmail, userPassword);
@@ -112,7 +123,9 @@ export const Login = () => {
 
     return (
         <>
-            {error && <ModalError setError={setError} textoError={mensajeError} />}
+            {error && (
+                <ModalError setError={setError} textoError={mensajeError} />
+            )}
             <Grid.Container>
                 <Grid xs={12} sm={7} md={6}>
                     <Container>
@@ -162,11 +175,11 @@ export const Login = () => {
                                         onChange={(e) =>
                                             setUserPassword(e.target.value)
                                         }
-                                        helperText={
-                                            <Link className="password-forgotten-button">
-                                                Olvide mi contraseña
-                                            </Link>
-                                        }
+                                        // helperText={
+                                        //     <Link className="password-forgotten-button">
+                                        //         Olvide mi contraseña
+                                        //     </Link>
+                                        // }
                                         width="100%"
                                     />
                                 </Grid>
@@ -182,7 +195,10 @@ export const Login = () => {
                                         onPress={handleEmailLoginSubmit}
                                     >
                                         {isLoading ? (
-                                            <Loading type="points" color="white" />
+                                            <Loading
+                                                type="points"
+                                                color="white"
+                                            />
                                         ) : (
                                             "Iniciar sesión"
                                         )}
@@ -209,7 +225,9 @@ export const Login = () => {
                                     >
                                         {googleIsLoading ? (
                                             <Loading type="points" />
-                                        ) : ("Login con Google")}
+                                        ) : (
+                                            "Login con Google"
+                                        )}
                                     </Button>
                                 </Grid>
                                 <Grid xs={12} css={{ marginTop: "$10" }}>

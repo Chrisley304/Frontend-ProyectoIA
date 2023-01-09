@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Page } from "../../components/Page/Page";
-import { Input, Button, Grid, Card, Text, Radio } from "@nextui-org/react";
+import { Input, Button, Grid, useTheme, Text, Radio } from "@nextui-org/react";
 import "./Clustering.css";
 import { useRef } from "react";
 import Papa from "papaparse";
@@ -12,6 +12,7 @@ import { TablaAsociacion } from "../../components/TablaAsociacion/TablaAsociacio
 import { LoadingModal } from "../../components/LoadingModal/LoadingModal";
 // import { GraficaAsociacion } from "../../components/GraficaAsociacion/GraficaAsociacion";
 import archivoPrueba from "../../assets/csvPrueba/Hipoteca.csv";
+import { CSVLink } from "react-csv";
 
 // Para utilizar el LOCALHOST:
 // const API = process.env.REACT_APP_LOCALHOST;
@@ -29,11 +30,12 @@ export const Clustering = () => {
     const [textoError, setTextoError] = useState("");
     const [dataTable, setDataTable] = useState();
     const [headerTable, setHeaderTable] = useState();
+    const [csvData, setCsvData] = useState("");
     // const [Xtabla, setXtabla] = useState();
     // const [Ytabla, setYtabla] = useState();
     const [isLoading, setIsLoading] = useState(false);
     const [salida, setSalida] = useState(false);
-
+    const { theme } = useTheme();
     // Reference for the invisible file input, to modify the beauty one
     const inputFile = useRef(null);
     // Reference for the form
@@ -69,11 +71,16 @@ export const Clustering = () => {
     }, [filenameLabel]);
 
     const isFormValid =
-        tipoClustering &&
-        metricaSeleccionada &&
-        minClusters &&
-        maxClusters &&
-        validateFileExt(filenameLabel);
+        tipoClustering === "particional"
+            ? tipoClustering &&
+              minClusters &&
+              maxClusters &&
+              validateFileExt(filenameLabel)
+            : tipoClustering &&
+              metricaSeleccionada &&
+              minClusters &&
+              maxClusters &&
+              validateFileExt(filenameLabel);
 
     const handleSubmit = async (e) => {
         try {
@@ -104,6 +111,7 @@ export const Clustering = () => {
                 }
                 // console.log(tableHeaders);
                 // console.log(parsedData);
+                setCsvData(csvFile);
                 setDataTable(parsedData);
                 setHeaderTable(tableHeaders);
                 setSalida(true);
@@ -185,6 +193,9 @@ export const Clustering = () => {
                                     value={metricaSeleccionada}
                                     onChange={setMetricaSeleccionada}
                                     name="tipoDistancia"
+                                    isDisabled={
+                                        tipoClustering === "particional"
+                                    }
                                 >
                                     <Radio size="sm" value="euclidean">
                                         Métrica Euclidiana
@@ -242,7 +253,12 @@ export const Clustering = () => {
                 </Grid>
                 <LoadingModal visible={isLoading} />
                 {/* Si hay un error, se muestra el modal de error */}
-                {errorRespuesta && <ModalError setError={setErrorRespuesta} textoError={textoError} />}
+                {errorRespuesta && (
+                    <ModalError
+                        setError={setErrorRespuesta}
+                        textoError={textoError}
+                    />
+                )}
                 {/* Si no se generaron reglas, se muestra el error */}
                 {/* {respuestaNReglas === 0 && (
                     <ModalError textoError="La configuración ingresada no genero ninguna regla de asociación. Actualiza los valores e intenta de nuevo." />
@@ -279,13 +295,41 @@ export const Clustering = () => {
                     </div>
                 </Grid> */}
                 <Grid xs={12}>
-                    {salida > 0 && <div className="resultados-container">
-                        <Text h3>Datos etiquetados con clusters:</Text>
-                        <TablaAsociacion
-                            data={dataTable}
-                            cols={headerTable}
-                        />
-                    </div>}
+                    {salida > 0 && (
+                        <div className="resultados-container">
+                            <Grid.Container>
+                                <Grid xs={10}>
+                                    <Text h3>
+                                        Datos etiquetados con clusters:
+                                    </Text>
+                                </Grid>
+                                <Grid xs={2} className="boton-csv-asos">
+                                    <CSVLink
+                                        data={csvData}
+                                        target="_blank"
+                                        filename={
+                                            "matrizdistancias_" +
+                                            metricaSeleccionada +
+                                            "_" +
+                                            filenameLabel.split(".")[0] +
+                                            ".csv"
+                                        }
+                                    >
+                                        Descargar CSV{" "}
+                                        <box-icon
+                                            type="solid"
+                                            name="download"
+                                            color={theme.colors.text.value}
+                                        ></box-icon>
+                                    </CSVLink>
+                                </Grid>
+                            </Grid.Container>
+                            <TablaAsociacion
+                                data={dataTable}
+                                cols={headerTable}
+                            />
+                        </div>
+                    )}
                 </Grid>
             </Grid.Container>
         </Page>
