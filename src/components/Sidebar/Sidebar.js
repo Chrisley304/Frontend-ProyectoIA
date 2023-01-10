@@ -1,16 +1,15 @@
-import React, {useEffect} from "react";
-import "./Sidebar.css"
-import {NavbarItem} from "../NavbarItem/NavbarItem"
+import React, { useEffect } from "react";
+import "./Sidebar.css";
+import { NavbarItem } from "../NavbarItem/NavbarItem";
 import { Button } from "@nextui-org/react";
-import "boxicons"
-import logo from "../../assets/img/logoIA.png"
+import "boxicons";
+import logo from "../../assets/img/logoIA.png";
 import { useGlobalState } from "../../App";
 
-export const Sidebar = () =>{
-
+export const Sidebar = () => {
     const [navBarCollapsed, setNavBarCollapsed] =
         useGlobalState("navBarCollapsed");
-    
+
     useEffect(() => {
         window.localStorage.setItem("navbarCollapse", navBarCollapsed);
     }, [navBarCollapsed]);
@@ -41,10 +40,10 @@ export const Sidebar = () =>{
                 <ul>
                     <li>
                         <NavbarItem
-                            label="Dashboard"
-                            icon="dashboard"
+                            label="Inicio"
+                            icon="home"
                             iconType="solid"
-                            link="/dashboard"
+                            link="/inicio"
                             setNavCollapse={setNavBarCollapsed}
                         />
                     </li>
@@ -77,9 +76,18 @@ export const Sidebar = () =>{
                     </li>
                     <li>
                         <NavbarItem
-                            link="/configuracion"
-                            label="Configuración"
-                            icon="cog"
+                            link="/clasificacion-logistica"
+                            label="Clasificación Logística"
+                            icon="category-alt"
+                            iconType="solid"
+                            setNavCollapse={setNavBarCollapsed}
+                        />
+                    </li>
+                    <li>
+                        <NavbarItem
+                            link="/arboles"
+                            label="Árboles y Bosques"
+                            icon="tree"
                             iconType="solid"
                             setNavCollapse={setNavBarCollapsed}
                         />
@@ -88,4 +96,4 @@ export const Sidebar = () =>{
             </div>
         </aside>
     );
-}
+};

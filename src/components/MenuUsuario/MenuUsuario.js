@@ -1,15 +1,14 @@
-import React, {useEffect, useState} from "react";
-import "./MenuUsuario.css"
+import React, { useEffect, useState } from "react";
+import "./MenuUsuario.css";
 import { Dropdown } from "@nextui-org/react";
-import 'boxicons'
+import "boxicons";
 import { Usuario } from "../Usuario/Usuario";
 import { useNavigate } from "react-router-dom";
 import { useGlobalState } from "../../App";
-import { getAuth, signOut } from "firebase/auth";
+import { getAuth } from "firebase/auth";
 import { useAuth } from "../../firebase-config";
 
-
-export const MenuUsuario = ()=>{
+export const MenuUsuario = () => {
     const auth = getAuth();
     const user = useAuth();
     const navigate = useNavigate();
@@ -37,9 +36,6 @@ export const MenuUsuario = ()=>{
             case "edit_profile":
                 console.log("Editar perfil");
                 break;
-            case "history":
-                console.log("Historial");
-                break;
             case "help":
                 console.log("Ayuda");
                 break;
@@ -56,14 +52,21 @@ export const MenuUsuario = ()=>{
             <Dropdown>
                 <Dropdown.Trigger>
                     <div className="dropdown-trigger-button">
-                        <Usuario nombreUsuario={nombreCompleto} urlImagen={photoURL}/>
+                        <Usuario
+                            nombreUsuario={nombreCompleto}
+                            urlImagen={photoURL}
+                        />
                     </div>
                 </Dropdown.Trigger>
-                <Dropdown.Menu selectionMode="single" onAction={seleccionMenu} color="primary" aria-label="User Actions">
+                <Dropdown.Menu
+                    selectionMode="single"
+                    onAction={seleccionMenu}
+                    color="primary"
+                    aria-label="User Actions"
+                >
                     <Dropdown.Item key="edit_profile">
                         Editar perfil
                     </Dropdown.Item>
-                    <Dropdown.Item key="history">Historial</Dropdown.Item>
                     <Dropdown.Item key="help">Ayuda</Dropdown.Item>
                     <Dropdown.Item key="logout" color="error" withDivider>
                         Cerrar sesión
@@ -72,4 +75,4 @@ export const MenuUsuario = ()=>{
             </Dropdown>
         </div>
     );
-}
+};

@@ -7,12 +7,13 @@ import imgCardDistancia from "../../assets/img/card-distancia.jpg";
 import imgCardClustering from "../../assets/img/card-clustering.jpg";
 import githubLightLogo from "../../assets/img/GitHub-Mark-120px-plus.png";
 import githubDarkLogo from "../../assets/img/github-mark-white.png";
+import cartasImg from "../../assets/img/cartas-adivina.jpg";
+import bosqueImg from "../../assets/img/bosque.jpg";
 import { useAuth } from "../../firebase-config";
 import useDarkMode from "use-dark-mode";
 
 export const Dashboard = () => {
     const darkMode = useDarkMode(false);
-    console.log(darkMode);
     const user = useAuth();
     const [nombreCompleto, setNombreCompleto] = useState("");
 
@@ -38,7 +39,7 @@ export const Dashboard = () => {
             <Grid.Container gap={2} justify="center">
                 <Grid xs={12} sm={6} md={4}>
                     <CardInicio
-                        titulo="Prueba las reglas de asociación!"
+                        titulo="¡Prueba las reglas de asociación!"
                         categoria="Algoritmo"
                         imagen={imgCardAsociacion}
                         linkPagina="/reglas-asociacion"
@@ -46,7 +47,7 @@ export const Dashboard = () => {
                 </Grid>
                 <Grid xs={12} sm={6} md={4}>
                     <CardInicio
-                        titulo="Prueba las metricas de distancia!"
+                        titulo="¡Prueba las métricas de distancia!"
                         categoria="Algoritmo"
                         imagen={imgCardDistancia}
                         linkPagina="/metricas-distancia"
@@ -54,10 +55,26 @@ export const Dashboard = () => {
                 </Grid>
                 <Grid xs={12} sm={6} md={4}>
                     <CardInicio
-                        titulo="Prueba el algoritmo de clustering!"
+                        titulo="¡Prueba el algoritmo de clustering!"
                         categoria="Algoritmo"
                         imagen={imgCardClustering}
                         linkPagina="/clustering"
+                    />
+                </Grid>
+                <Grid xs={12} sm={6} md={4}>
+                    <CardInicio
+                        titulo="¡Prueba el algoritmo de clasificación logistica!"
+                        categoria="Algoritmo"
+                        imagen={cartasImg}
+                        linkPagina="/clasificacion-logistica"
+                    />
+                </Grid>
+                <Grid xs={12} sm={6} md={4}>
+                    <CardInicio
+                        titulo="¡Prueba el algoritmo de arboles y bosques aleatorios!"
+                        categoria="Algoritmo"
+                        imagen={bosqueImg}
+                        linkPagina="/arboles"
                     />
                 </Grid>
                 <Grid xs={12}>

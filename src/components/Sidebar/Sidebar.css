@@ -1,4 +1,4 @@
-.Sidebar{
+.Sidebar {
     position: fixed;
     top: 0;
     left: 0;
@@ -11,67 +11,68 @@
     z-index: 100;
 }
 
-.Sidebar.collapsed{
+.Sidebar.collapsed {
     width: 100px;
 }
-.Sidebar.collapsed span{
+.Sidebar.collapsed span {
     display: none;
 }
-.Sidebar.collapsed .nextui-button-icon{
+.Sidebar.collapsed .nextui-button-icon {
     display: flex;
 }
 
-.sidebar-top{
+.sidebar-top {
     margin-top: 1rem;
-    margin-bottom: 4rem;
+    margin-bottom: 2rem;
 }
 
-.sidebar-logo{
+.sidebar-logo {
     display: flex;
     color: var(--nextui-colors-text);
     justify-content: center;
     align-items: center;
 }
 
-.sidebar-logo.active, .sidebar-logo.active:hover{
+.sidebar-logo.active,
+.sidebar-logo.active:hover {
     background-color: transparent;
     font-weight: 500;
     color: var(--nextui-colors-text);
 }
 
-.sidebar-logo img{
+.sidebar-logo img {
     width: 70px;
     height: auto;
 }
-.sidebar-logo span{
+.sidebar-logo span {
     font-weight: 700;
     font-size: 22px;
 }
 
-.sidebar-close{
+.sidebar-close {
     display: flex;
     justify-content: end;
     margin-bottom: 25px;
 }
 
-.Sidebar.collapsed .sidebar-close{
+.Sidebar.collapsed .sidebar-close {
     justify-content: center;
 }
 
-.sidebar-close button:hover{
+.sidebar-close button:hover {
     background-color: var(--nextui-colors-hover);
 }
-.sidebar-content{
+.sidebar-content {
     margin-top: auto;
     margin-bottom: auto;
     margin-left: 15px;
     margin-right: 15px;
 }
-.sidebar-content ul{
+.sidebar-content ul {
     margin: 0;
 }
 
-.sidebar-content li{
+.sidebar-content li {
     margin-bottom: 25px;
 }
 
@@ -85,63 +86,60 @@
 
 /* Para ocultar cosas de los nav items */
 
-.Sidebar.collapsed .navbar-item-box{
+.Sidebar.collapsed .navbar-item-box {
     padding: 0;
     height: 40px;
 }
-.Sidebar.collapsed .navbar-item-box > box-icon{
+.Sidebar.collapsed .navbar-item-box > box-icon {
     padding-right: 0;
 }
 
 /* Media querys  xs */
 @media (max-width: 991px) {
-    
-    .Sidebar{
+    .Sidebar {
         position: absolute;
         left: -1000px;
         transition: var(--tran-general);
     }
-    
-    .sidebar-close{
+
+    .sidebar-close {
         position: fixed;
         left: 30px;
     }
-    .Sidebar.collapsed .sidebar-close{
+    .Sidebar.collapsed .sidebar-close {
         position: sticky;
         top: 0;
         left: 30px;
     }
 
     /* Aquí para evitar hacer relajos con mi JS, el collapsed sera = a cuando quieres mostrar el menú */
-    .Sidebar.collapsed{
+    .Sidebar.collapsed {
         left: 0;
         width: 250px;
         position: fixed;
         height: 100%;
         z-index: 10000;
     }
-    .Sidebar.collapsed span{
+    .Sidebar.collapsed span {
         display: block;
     }
-    .Sidebar span{
+    .Sidebar span {
         display: none;
     }
-    .Sidebar .nextui-button-icon{
+    .Sidebar .nextui-button-icon {
         display: flex;
     }
-    .Sidebar.collapsed .navbar-item-box{
+    .Sidebar.collapsed .navbar-item-box {
         padding: 25px;
         height: 40px;
     }
     .Sidebar.collapsed .navbar-item-box > box-icon {
         padding-right: 10px;
     }
-
 }
 
 /* Media querys  sm */
-@media (min-width: 575px) { 
-
+@media (min-width: 575px) {
 }
 
 /*

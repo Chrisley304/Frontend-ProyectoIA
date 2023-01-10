@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import useDarkMode from "use-dark-mode";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import {Sidebar} from "./components/Sidebar/Sidebar"
-import {Dashboard} from "./pages/Dashboard/Dashboard"
-import {PageNotFound} from "./pages/PageNotFound/PageNotFound"
-import {ReglasAsociacion} from "./pages/ReglasAsociacion/ReglasAsociacion"
+import { Sidebar } from "./components/Sidebar/Sidebar";
+import { Dashboard } from "./pages/Dashboard/Dashboard";
+import { PageNotFound } from "./pages/PageNotFound/PageNotFound";
+import { ReglasAsociacion } from "./pages/ReglasAsociacion/ReglasAsociacion";
 import { MetricasDistancia } from "./pages/MetricasDistancia/MetricasDistancia";
 import { Clustering } from "./pages/Clustering/Clustering";
 import { Configuracion } from "./pages/Configuracion/Configuracion";
@@ -16,7 +16,7 @@ import { createGlobalState } from "react-hooks-global-state";
 import { PrivateRoute } from "./components/PrivateRoute/PrivateRoute";
 import { getAuth } from "firebase/auth";
 import { AuthProvider, useFirebaseApp } from "reactfire";
-
+import { Clasificacion } from "./pages/Clasificacion/Clasificacion";
 
 const lightTheme = createTheme({
     type: "light", // it could be "light" or "dark"
@@ -86,10 +86,11 @@ export const { useGlobalState } = createGlobalState({
 
 function App() {
     const [isLogged, setisLogged] = useGlobalState("isLogged");
-    const [navBarCollapsed, setNavBarCollapsed] = useGlobalState("navBarCollapsed");
+    const [navBarCollapsed, setNavBarCollapsed] =
+        useGlobalState("navBarCollapsed");
     const firebase = useFirebaseApp();
     const auth = getAuth(firebase);
-    const darkMode = useDarkMode(false, {storageKey: null});
+    const darkMode = useDarkMode(false, { storageKey: null });
     useEffect(() => {
         const loggedData = window.localStorage.getItem("userIsLogged");
         const collapsedData = window.localStorage.getItem("navbarCollapse");
@@ -105,7 +106,7 @@ function App() {
         document
             .querySelector('meta[name="theme-color"]')
             ?.setAttribute("content", "#121212");
-    }else{
+    } else {
         document
             .querySelector('meta[name="theme-color"]')
             ?.setAttribute("content", "#F8F9FC");
@@ -128,7 +129,7 @@ function App() {
                             }
                         />
                         <Route
-                            path="/dashboard"
+                            path="/inicio"
                             element={
                                 <PrivateRoute forlogin={false}>
                                     <Dashboard />
@@ -151,10 +152,46 @@ function App() {
                                 </PrivateRoute>
                             }
                         />
-                        <Route path="/clustering" element={<PrivateRoute><Clustering /></PrivateRoute>} />
-                        <Route path="/configuracion" element={<PrivateRoute><Configuracion /></PrivateRoute>} />
-                        <Route path="/login" element={<PrivateRoute forlogin={true}><Login /></PrivateRoute>} />
-                        <Route path="/registro" element={<PrivateRoute forlogin={true}><Registro /></PrivateRoute>} />
+                        <Route
+                            path="/clustering"
+                            element={
+                                <PrivateRoute forlogin={false}>
+                                    <Clustering />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/clasificacion-logistica"
+                            element={
+                                <PrivateRoute forlogin={false}>
+                                    <Clasificacion />
+                                </PrivateRoute>
+                            }
+                        />
+                        {/* <Route
+                            path="/configuracion"
+                            element={
+                                <PrivateRoute>
+                                    <Configuracion />
+                                </PrivateRoute>
+                            }
+                        /> */}
+                        <Route
+                            path="/login"
+                            element={
+                                <PrivateRoute forlogin={true}>
+                                    <Login />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/registro"
+                            element={
+                                <PrivateRoute forlogin={true}>
+                                    <Registro />
+                                </PrivateRoute>
+                            }
+                        />
                         <Route path="*" element={<PageNotFound />} />
                     </Routes>
                     {isLogged && <Footer />}
