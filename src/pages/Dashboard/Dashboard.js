@@ -1,38 +1,38 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { Grid, Card, Link, Text } from "@nextui-org/react";
-import {Page} from "../../components/Page/Page";
+import { Page } from "../../components/Page/Page";
 import { CardInicio } from "../../components/CardInicio/CardInicio";
 import imgCardAsociacion from "../../assets/img/card-1.jpg";
-import imgCardDistancia from "../../assets/img/card-distancia.jpg"
+import imgCardDistancia from "../../assets/img/card-distancia.jpg";
 import imgCardClustering from "../../assets/img/card-clustering.jpg";
 import githubLightLogo from "../../assets/img/GitHub-Mark-120px-plus.png";
 import githubDarkLogo from "../../assets/img/github-mark-white.png";
 import { useAuth } from "../../firebase-config";
 import useDarkMode from "use-dark-mode";
 
-export const Dashboard = ()=>{
+export const Dashboard = () => {
     const darkMode = useDarkMode(false);
     const user = useAuth();
     const [nombreCompleto, setNombreCompleto] = useState("");
 
-    useEffect(()=>{
-        if(user){
+    useEffect(() => {
+        if (user) {
             setNombreCompleto(user.displayName);
-        }   
-    },[user]);
+        }
+    }, [user]);
     var nombreUsuario = "";
-    if (nombreCompleto.length > 0){
+    if (nombreCompleto.length > 0) {
         nombreUsuario = nombreCompleto.split(" ")[0];
     }
     return (
         <Page
             titulo={
                 <span>
-                    Bienvenido{" "}
+                    Bienvenido a Algorithmia{" "}
                     <span className="resaltar-texto">{nombreUsuario}</span>!
                 </span>
             }
-            descripcion="Aquí puedes obtener información general de tu paso por la aplicación."
+            descripcion="Comienza a interactuar con la aplicación con alguno de los siguientes algoritmos."
         >
             <Grid.Container gap={2} justify="center">
                 <Grid xs={12} sm={6} md={4}>
@@ -64,7 +64,9 @@ export const Dashboard = ()=>{
                         <Card.Header>
                             <img
                                 alt="github logo"
-                                src={ darkMode? githubDarkLogo : githubLightLogo}
+                                src={
+                                    darkMode ? githubDarkLogo : githubLightLogo
+                                }
                                 width="34px"
                                 height="34px"
                             />
@@ -110,4 +112,4 @@ export const Dashboard = ()=>{
             </Grid.Container>
         </Page>
     );
-}
+};
