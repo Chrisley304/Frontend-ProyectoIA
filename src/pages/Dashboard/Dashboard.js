@@ -12,6 +12,7 @@ import useDarkMode from "use-dark-mode";
 
 export const Dashboard = () => {
     const darkMode = useDarkMode(false);
+    console.log(darkMode);
     const user = useAuth();
     const [nombreCompleto, setNombreCompleto] = useState("");
 
@@ -65,7 +66,9 @@ export const Dashboard = () => {
                             <img
                                 alt="github logo"
                                 src={
-                                    darkMode ? githubDarkLogo : githubLightLogo
+                                    darkMode.value
+                                        ? githubDarkLogo
+                                        : githubLightLogo
                                 }
                                 width="34px"
                                 height="34px"
@@ -73,7 +76,7 @@ export const Dashboard = () => {
                             <Grid.Container css={{ pl: "$6" }}>
                                 <Grid xs={12}>
                                     <Text h4 css={{ lineHeight: "$xs" }}>
-                                        Revisa el codigo fuente del proyecto!
+                                        Revisa el código fuente del proyecto!
                                     </Text>
                                 </Grid>
                                 <Grid xs={12}>
@@ -85,7 +88,7 @@ export const Dashboard = () => {
                         </Card.Header>
                         <Card.Body css={{ py: "$2" }}>
                             <Text>
-                                El codigo fuente es <strong>open source</strong>{" "}
+                                El código fuente es <strong>open source</strong>{" "}
                                 por lo que puedes revisarlo si así lo deseas en
                                 mi perfil de Github!
                             </Text>

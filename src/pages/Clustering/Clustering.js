@@ -15,9 +15,9 @@ import archivoPrueba from "../../assets/csvPrueba/Hipoteca.csv";
 import { CSVLink } from "react-csv";
 
 // Para utilizar el LOCALHOST:
-// const API = process.env.REACT_APP_LOCALHOST;
+const API = process.env.REACT_APP_LOCALHOST;
 // Para usar la API de Heroku:
-const API = process.env.REACT_APP_API_URL;
+// const API = process.env.REACT_APP_API_URL;
 
 export const Clustering = () => {
     // Para el label del file
@@ -73,13 +73,12 @@ export const Clustering = () => {
     const isFormValid =
         tipoClustering === "particional"
             ? tipoClustering &&
-              minClusters &&
-              maxClusters &&
+              minClusters > 0 &&
+              maxClusters > 0 &&
               validateFileExt(filenameLabel)
             : tipoClustering &&
               metricaSeleccionada &&
-              minClusters &&
-              maxClusters &&
+              maxClusters > 0 &&
               validateFileExt(filenameLabel);
 
     const handleSubmit = async (e) => {
@@ -109,8 +108,6 @@ export const Clustering = () => {
                         label: arrayHead[i],
                     });
                 }
-                // console.log(tableHeaders);
-                // console.log(parsedData);
                 setCsvData(csvFile);
                 setDataTable(parsedData);
                 setHeaderTable(tableHeaders);
@@ -185,57 +182,69 @@ export const Clustering = () => {
                                     </Radio>
                                 </Radio.Group>
                             </Grid>
-                            <Grid xs={12}>
-                                {/* 5576080946 */}
-                                {/* 5610980095 */}
-                                <Radio.Group
-                                    label="Métrica a utilizar"
-                                    value={metricaSeleccionada}
-                                    onChange={setMetricaSeleccionada}
-                                    name="tipoDistancia"
-                                    isDisabled={
-                                        tipoClustering === "particional"
-                                    }
-                                >
-                                    <Radio size="sm" value="euclidean">
-                                        Métrica Euclidiana
-                                    </Radio>
-                                    <Radio size="sm" value="chebyshev">
-                                        Métrica Chebyshev
-                                    </Radio>
-                                    <Radio size="sm" value="cityblock">
-                                        Métrica de Manhattan (City block)
-                                    </Radio>
-                                </Radio.Group>
-                            </Grid>
-                            <Grid xs={12}>
-                                <Input
-                                    helperText=""
-                                    type="number"
-                                    step={1}
-                                    min={0}
-                                    name="minClusters"
-                                    onChange={(e) =>
-                                        setMinClusters(e.target.value)
-                                    }
-                                    label="Numero de mínimo de clusters"
-                                    placeholder="Ej. 2"
-                                />
-                            </Grid>
-                            <Grid xs={12}>
-                                <Input
-                                    helperText=""
-                                    type="number"
-                                    step={1}
-                                    min={0}
-                                    name="maxClusters"
-                                    onChange={(e) =>
-                                        setMaxClusters(e.target.value)
-                                    }
-                                    label="Numero de máximo de clusters"
-                                    placeholder="Ej. 4"
-                                />
-                            </Grid>
+                            {tipoClustering &&
+                                tipoClustering !== "particional" && (
+                                    <Grid xs={12}>
+                                        {/* 5576080946 */}
+                                        {/* 5610980095 */}
+                                        <Radio.Group
+                                            label="Métrica a utilizar"
+                                            value={metricaSeleccionada}
+                                            onChange={setMetricaSeleccionada}
+                                            name="tipoDistancia"
+                                            isDisabled={
+                                                tipoClustering === "particional"
+                                            }
+                                        >
+                                            <Radio size="sm" value="euclidean">
+                                                Métrica Euclidiana
+                                            </Radio>
+                                            <Radio size="sm" value="chebyshev">
+                                                Métrica Chebyshev
+                                            </Radio>
+                                            <Radio size="sm" value="cityblock">
+                                                Métrica de Manhattan (City
+                                                block)
+                                            </Radio>
+                                        </Radio.Group>
+                                    </Grid>
+                                )}
+                            {tipoClustering === "particional" && (
+                                <Grid xs={12}>
+                                    <Input
+                                        helperText=""
+                                        type="number"
+                                        step={1}
+                                        min={0}
+                                        name="minClusters"
+                                        onChange={(e) =>
+                                            setMinClusters(e.target.value)
+                                        }
+                                        label="Numero de mínimo de clusters"
+                                        placeholder="Ej. 2"
+                                    />
+                                </Grid>
+                            )}
+                            {tipoClustering && (
+                                <Grid xs={12}>
+                                    <Input
+                                        helperText=""
+                                        type="number"
+                                        step={1}
+                                        min={0}
+                                        name="maxClusters"
+                                        onChange={(e) =>
+                                            setMaxClusters(e.target.value)
+                                        }
+                                        label={
+                                            tipoClustering === "particional"
+                                                ? "Numero de máximo de clusters"
+                                                : "Numero de clusters"
+                                        }
+                                        placeholder="Ej. 4"
+                                    />
+                                </Grid>
+                            )}
                             <Grid xs={12}>
                                 <Button
                                     flat
