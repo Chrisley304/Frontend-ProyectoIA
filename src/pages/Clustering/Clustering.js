@@ -1,18 +1,23 @@
 import React, { useState } from "react";
 import { Page } from "../../components/Page/Page";
-import { Input, Button, Grid, useTheme, Text, Radio } from "@nextui-org/react";
+import {
+    Input,
+    Button,
+    Grid,
+    useTheme,
+    Text,
+    Radio,
+    Container,
+} from "@nextui-org/react";
 import "./Clustering.css";
 import { useRef } from "react";
 import Papa from "papaparse";
-// import DataTable from "react-data-table-component";
-// import { CsvToHtmlTable } from "react-csv-to-table";
-// import { TablaAsociacion } from "../../components/TablaAsociacion/TablaAsociacion";
 import { ModalError } from "../../components/ModalError/ModalError";
 import { TablaAsociacion } from "../../components/TablaAsociacion/TablaAsociacion";
 import { LoadingModal } from "../../components/LoadingModal/LoadingModal";
-// import { GraficaAsociacion } from "../../components/GraficaAsociacion/GraficaAsociacion";
 import archivoPrueba from "../../assets/csvPrueba/Hipoteca.csv";
 import { CSVLink } from "react-csv";
+import SeleccionCaracteristicas from "../../components/SeleccionCaracteristicas/SeleccionCaracteristicas";
 
 // Para utilizar el LOCALHOST:
 const API = process.env.REACT_APP_LOCALHOST;
@@ -31,6 +36,11 @@ export const Clustering = () => {
     const [dataTable, setDataTable] = useState();
     const [headerTable, setHeaderTable] = useState();
     const [csvData, setCsvData] = useState("");
+    const [mapaCalor, setMapaCalor] = useState();
+    const [columnasDataSet, setColumnasDataSet] = useState([]);
+    const [seleccionCaracteristicas, setSeleccionCaracteristicas] = useState(
+        []
+    );
     // const [Xtabla, setXtabla] = useState();
     // const [Ytabla, setYtabla] = useState();
     const [isLoading, setIsLoading] = useState(false);
@@ -73,19 +83,48 @@ export const Clustering = () => {
     const isFormValid =
         tipoClustering === "particional"
             ? tipoClustering &&
+              seleccionCaracteristicas.length > 0 &&
               minClusters > 0 &&
               maxClusters > 0 &&
               validateFileExt(filenameLabel)
             : tipoClustering &&
+              seleccionCaracteristicas.length > 0 &&
               metricaSeleccionada &&
               maxClusters > 0 &&
               validateFileExt(filenameLabel);
+
+    const handleFileAnalisys = async () => {
+        setIsLoading(true);
+
+        const formData = new FormData(form.current);
+        const res = await fetch(API + "analisis-datos", {
+            method: "POST",
+            body: formData,
+        });
+        const infoRes = await res.json();
+
+        if (!("error" in infoRes)) {
+            // Se recibe los bytes de la imagen
+            const image_data = infoRes["image_data"];
+            const columnas = infoRes["columnas"];
+            setMapaCalor(image_data);
+            setColumnasDataSet(columnas);
+        } else {
+            setTextoError(infoRes["error"]);
+            setErrorRespuesta(true);
+        }
+        setIsLoading(false);
+    };
 
     const handleSubmit = async (e) => {
         try {
             setIsLoading(true);
             e.preventDefault();
             const formData = new FormData(form.current);
+            formData.append(
+                "seleccionCaracteristicas",
+                seleccionCaracteristicas
+            );
             const res = await fetch(API + "clustering/" + tipoClustering, {
                 method: "POST",
                 body: formData,
@@ -144,18 +183,18 @@ export const Clustering = () => {
                 </div>
             }
         >
-            <Grid.Container gap={2}>
-                <Grid xs={12} sm={6}>
+            <Grid.Container>
+                <Grid xs={12} sm={4} md={6}>
                     <form ref={form} onSubmit={handleSubmit}>
                         <Grid.Container gap={2}>
+                            <input
+                                ref={inputFile}
+                                type="file"
+                                name="file"
+                                style={{ display: "none" }}
+                                onChange={handleFileInput}
+                            ></input>
                             <Grid xs={12}>
-                                <input
-                                    ref={inputFile}
-                                    type="file"
-                                    name="file"
-                                    style={{ display: "none" }}
-                                    onChange={handleFileInput}
-                                ></input>
                                 <Input
                                     readOnly
                                     labelLeft="Archivo"
@@ -169,24 +208,39 @@ export const Clustering = () => {
                                 />
                             </Grid>
                             <Grid xs={12}>
-                                <Radio.Group
-                                    label="Tipo de clustering"
-                                    value={tipoClustering}
-                                    onChange={setTipoClustering}
+                                <Button
+                                    flat
+                                    size={"lg"}
+                                    color="primary"
+                                    css={{ mt: "$10" }}
+                                    disabled={fileHelper.color !== "success"}
+                                    type="button"
+                                    onPress={handleFileAnalisys}
+                                    value="matriz-distancias"
                                 >
-                                    <Radio size="sm" value="jerarquico">
-                                        Método Jerarquico
-                                    </Radio>
-                                    <Radio size="sm" value="particional">
-                                        Método Particional
-                                    </Radio>
-                                </Radio.Group>
+                                    Analizar archivo
+                                </Button>
                             </Grid>
-                            {tipoClustering &&
+                            {mapaCalor && (
+                                <Grid xs={12}>
+                                    <Radio.Group
+                                        label="Tipo de clustering"
+                                        value={tipoClustering}
+                                        onChange={setTipoClustering}
+                                    >
+                                        <Radio size="sm" value="jerarquico">
+                                            Método Jerarquico
+                                        </Radio>
+                                        <Radio size="sm" value="particional">
+                                            Método Particional
+                                        </Radio>
+                                    </Radio.Group>
+                                </Grid>
+                            )}
+                            {mapaCalor &&
+                                tipoClustering &&
                                 tipoClustering !== "particional" && (
                                     <Grid xs={12}>
-                                        {/* 5576080946 */}
-                                        {/* 5610980095 */}
                                         <Radio.Group
                                             label="Métrica a utilizar"
                                             value={metricaSeleccionada}
@@ -209,7 +263,7 @@ export const Clustering = () => {
                                         </Radio.Group>
                                     </Grid>
                                 )}
-                            {tipoClustering === "particional" && (
+                            {mapaCalor && tipoClustering === "particional" && (
                                 <Grid xs={12}>
                                     <Input
                                         helperText=""
@@ -225,7 +279,7 @@ export const Clustering = () => {
                                     />
                                 </Grid>
                             )}
-                            {tipoClustering && (
+                            {mapaCalor && tipoClustering && (
                                 <Grid xs={12}>
                                     <Input
                                         helperText=""
@@ -245,18 +299,20 @@ export const Clustering = () => {
                                     />
                                 </Grid>
                             )}
-                            <Grid xs={12}>
-                                <Button
-                                    flat
-                                    size={"lg"}
-                                    color="primary"
-                                    disabled={!isFormValid}
-                                    type="submit"
-                                    value="Submit"
-                                >
-                                    Obtener reglas de asociacion
-                                </Button>
-                            </Grid>
+                            {mapaCalor && (
+                                <Grid xs={12}>
+                                    <Button
+                                        flat
+                                        size={"lg"}
+                                        color="primary"
+                                        disabled={!isFormValid}
+                                        type="submit"
+                                        value="Submit"
+                                    >
+                                        Obtener reglas de asociacion
+                                    </Button>
+                                </Grid>
+                            )}
                         </Grid.Container>
                     </form>
                 </Grid>
@@ -268,6 +324,19 @@ export const Clustering = () => {
                         textoError={textoError}
                     />
                 )}
+                <Grid xs={12} sm={8} md={6}>
+                    {mapaCalor && (
+                        <div className="resultados-container">
+                            <SeleccionCaracteristicas
+                                columnasDataSet={columnasDataSet}
+                                mapaCalor={mapaCalor}
+                                setSeleccionCaracteristicas={
+                                    setSeleccionCaracteristicas
+                                }
+                            />
+                        </div>
+                    )}
+                </Grid>
                 {/* Si no se generaron reglas, se muestra el error */}
                 {/* {respuestaNReglas === 0 && (
                     <ModalError textoError="La configuración ingresada no genero ninguna regla de asociación. Actualiza los valores e intenta de nuevo." />

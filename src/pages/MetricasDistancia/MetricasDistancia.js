@@ -159,7 +159,7 @@ export const MetricasDistancia = () => {
         >
             <form ref={form} className="form-container">
                 <Grid.Container>
-                    <Grid xs={12} sm={4}>
+                    <Grid xs={12} sm={4} md={6}>
                         <Container>
                             <input
                                 ref={inputFile}
@@ -191,9 +191,41 @@ export const MetricasDistancia = () => {
                             >
                                 Analizar archivo
                             </Button>
+                            {mapaCalor && (
+                                <>
+                                    <Radio.Group
+                                        label="Métrica a utilizar"
+                                        value={metricaSeleccionada}
+                                        onChange={setMetricaSeleccionada}
+                                        css={{ mt: "$10" }}
+                                    >
+                                        <Radio size="sm" value="euclidean">
+                                            Métrica Euclidiana
+                                        </Radio>
+                                        <Radio size="sm" value="chebyshev">
+                                            Métrica Chebyshev
+                                        </Radio>
+                                        <Radio size="sm" value="cityblock">
+                                            Métrica de Manhattan (City block)
+                                        </Radio>
+                                    </Radio.Group>
+                                    <Button
+                                        flat
+                                        size={"lg"}
+                                        color="primary"
+                                        disabled={!isFormValid}
+                                        type="button"
+                                        css={{ mt: "$10" }}
+                                        onPress={handleSubmitMatriz}
+                                        value="matriz-distancias"
+                                    >
+                                        Obtener matriz de distancia
+                                    </Button>
+                                </>
+                            )}
                         </Container>
                     </Grid>
-                    <Grid xs={12} sm={8}>
+                    <Grid xs={12} sm={8} md={6}>
                         {mapaCalor && (
                             <div className="resultados-container">
                                 <SeleccionCaracteristicas
@@ -206,39 +238,6 @@ export const MetricasDistancia = () => {
                             </div>
                         )}
                     </Grid>
-                    {mapaCalor && (
-                        <Grid xs={12} sm={4}>
-                            <Container css={{ mt: "$10" }}>
-                                <Radio.Group
-                                    label="Métrica a utilizar"
-                                    value={metricaSeleccionada}
-                                    onChange={setMetricaSeleccionada}
-                                >
-                                    <Radio size="sm" value="euclidean">
-                                        Métrica Euclidiana
-                                    </Radio>
-                                    <Radio size="sm" value="chebyshev">
-                                        Métrica Chebyshev
-                                    </Radio>
-                                    <Radio size="sm" value="cityblock">
-                                        Métrica de Manhattan (City block)
-                                    </Radio>
-                                </Radio.Group>
-                                <Button
-                                    flat
-                                    size={"lg"}
-                                    color="primary"
-                                    disabled={!isFormValid}
-                                    type="button"
-                                    css={{ mt: "$10" }}
-                                    onPress={handleSubmitMatriz}
-                                    value="matriz-distancias"
-                                >
-                                    Obtener matriz de distancia
-                                </Button>
-                            </Container>
-                        </Grid>
-                    )}
                     <LoadingModal visible={isLoading} />
                     {/* Si hay un error, se muestra el modal de error */}
                     {errorRespuesta && (
