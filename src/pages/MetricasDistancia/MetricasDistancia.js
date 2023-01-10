@@ -252,13 +252,13 @@ export const MetricasDistancia = () => {
                         {salida && (
                             <div className="resultados-container">
                                 <Grid.Container>
-                                    <Grid xs={10}>
+                                    <Grid xs={8}>
                                         <Text h3>
                                             Matriz de distancia de los
                                             elementos:
                                         </Text>
                                     </Grid>
-                                    <Grid xs={2} className="boton-csv-asos">
+                                    <Grid xs={4} className="boton-csv-asos">
                                         <CSVLink
                                             data={csvData}
                                             target="_blank"
