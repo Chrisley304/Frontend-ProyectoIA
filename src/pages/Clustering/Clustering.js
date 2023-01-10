@@ -7,7 +7,7 @@ import {
     useTheme,
     Text,
     Radio,
-    Container,
+    Card,
 } from "@nextui-org/react";
 import "./Clustering.css";
 import { useRef } from "react";
@@ -20,9 +20,9 @@ import { CSVLink } from "react-csv";
 import SeleccionCaracteristicas from "../../components/SeleccionCaracteristicas/SeleccionCaracteristicas";
 
 // Para utilizar el LOCALHOST:
-const API = process.env.REACT_APP_LOCALHOST;
+// const API = process.env.REACT_APP_LOCALHOST;
 // Para usar la API de Heroku:
-// const API = process.env.REACT_APP_API_URL;
+const API = process.env.REACT_APP_API_URL;
 
 export const Clustering = () => {
     // Para el label del file
@@ -37,6 +37,7 @@ export const Clustering = () => {
     const [headerTable, setHeaderTable] = useState();
     const [csvData, setCsvData] = useState("");
     const [mapaCalor, setMapaCalor] = useState();
+    const [graficaClusters, setGraficaClusters] = useState();
     const [columnasDataSet, setColumnasDataSet] = useState([]);
     const [seleccionCaracteristicas, setSeleccionCaracteristicas] = useState(
         []
@@ -133,12 +134,10 @@ export const Clustering = () => {
             // console.log(infoRes);
             if (!("error" in infoRes)) {
                 const csvFile = infoRes["csv"];
-                // setXtabla(infoRes["datosX"]);
-                // setYtabla(infoRes["datosY"]);
                 console.log(infoRes);
                 const parsedCsv = Papa.parse(csvFile, { header: true });
                 const parsedData = parsedCsv?.data;
-                // console.log(parsedData);
+                const image_data = infoRes["grafica"];
                 var tableHeaders = [];
                 var arrayHead = Object.keys(parsedData[0]);
                 for (var i in arrayHead) {
@@ -150,6 +149,7 @@ export const Clustering = () => {
                 setCsvData(csvFile);
                 setDataTable(parsedData);
                 setHeaderTable(tableHeaders);
+                setGraficaClusters(image_data);
                 setSalida(true);
             } else {
                 setTextoError(infoRes["error"]);
@@ -186,7 +186,7 @@ export const Clustering = () => {
             <Grid.Container>
                 <Grid xs={12} sm={4} md={6}>
                     <form ref={form} onSubmit={handleSubmit}>
-                        <Grid.Container gap={2}>
+                        <Grid.Container gap={2} css={{ mb: "$20" }}>
                             <input
                                 ref={inputFile}
                                 type="file"
@@ -337,51 +337,16 @@ export const Clustering = () => {
                         </div>
                     )}
                 </Grid>
-                {/* Si no se generaron reglas, se muestra el error */}
-                {/* {respuestaNReglas === 0 && (
-                    <ModalError textoError="La configuración ingresada no genero ninguna regla de asociación. Actualiza los valores e intenta de nuevo." />
-                )} */}
-                {/* <Grid xs={12} sm={8}>
-                    <div className="resultados-container">
-                        <Card
-                            className="card-resultados"
-                            css={{
-                                maxHeight: "700px",
-                                h: "100%",
-                                overflow: "scroll",
-                            }}
-                        >
-                            <Card.Body className="card-resultados-body">
-                                <Text h3>Frecuencia de los elementos:</Text>
-                                {salida ? (
-                                    <div className="waiting-container">
-                                        <Text css={{ pb: "$10" }}>
-                                            Esperando entrada...
-                                        </Text>
-                                        <Progress
-                                            indeterminated
-                                            value={50}
-                                            color="secondary"
-                                            status="secondary"
-                                        />
-                                    </div>
-                                ) : (
-                                    <GraficaAsociacion x={Xtabla} y={Ytabla} />
-                                )}
-                            </Card.Body>
-                        </Card>
-                    </div>
-                </Grid> */}
-                <Grid xs={12}>
+                <Grid xs={12} sm={8} md={6}>
                     {salida > 0 && (
                         <div className="resultados-container">
                             <Grid.Container>
-                                <Grid xs={10}>
+                                <Grid xs={8}>
                                     <Text h3>
                                         Datos etiquetados con clusters:
                                     </Text>
                                 </Grid>
-                                <Grid xs={2} className="boton-csv-asos">
+                                <Grid xs={4} className="boton-csv-asos">
                                     <CSVLink
                                         data={csvData}
                                         target="_blank"
@@ -415,6 +380,26 @@ export const Clustering = () => {
                         </div>
                     )}
                 </Grid>
+                {graficaClusters && (
+                    <Grid xs={12} sm={3} md={6}>
+                        <Card
+                            className="card-resultados"
+                            css={{
+                                overflow: "scroll",
+                            }}
+                        >
+                            <Card.Header>
+                                <Text h3>Gráfica de los clusters:</Text>
+                            </Card.Header>
+                            <Card.Body css={{ pt: "0" }}>
+                                <img
+                                    src={`data:image/png;base64,${graficaClusters}`}
+                                    alt="Mapa de calor de los datos"
+                                />
+                            </Card.Body>
+                        </Card>
+                    </Grid>
+                )}
             </Grid.Container>
         </Page>
     );
