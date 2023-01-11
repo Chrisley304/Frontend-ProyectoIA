@@ -15,28 +15,33 @@ import { useRef } from "react";
 import Papa from "papaparse";
 import { ModalError } from "../../components/ModalError/ModalError";
 import { LoadingModal } from "../../components/LoadingModal/LoadingModal";
-import archivoPrueba from "../../assets/csvPrueba/Hipoteca.csv";
+import archivoPrueba from "../../assets/csvPrueba/diabetes.csv";
 import { CSVLink } from "react-csv";
 import SeleccionCaracteristicasClasificacion from "../../components/SeleccionCaracteristicasClasificacion/SeleccionCaracteristicasClasificacion";
 
 // Para utilizar el LOCALHOST:
-const API = process.env.REACT_APP_LOCALHOST;
+// const API = process.env.REACT_APP_LOCALHOST;
 // Para usar la API de Heroku:
-// const API = process.env.REACT_APP_API_URL;
+const API = process.env.REACT_APP_API_URL;
 
 export const ArbolesBosques = () => {
     // Para el label del file
     const [filenameLabel, setFilenameLabel] = useState("");
     const [errorRespuesta, setErrorRespuesta] = useState(false);
     const [textoError, setTextoError] = useState("");
-    const [dataTable, setDataTable] = useState([]);
+    const [dataTableAD, setDataTableAD] = useState([]);
+    const [csvDataAD, setCsvDataAD] = useState("");
+    const [dataTableBA, setDataTableBA] = useState([]);
+    const [csvDataBA, setCsvDataBA] = useState("");
     // const [headerTable, setHeaderTable] = useState([]);
-    const [csvData, setCsvData] = useState("");
     const [mapaCalor, setMapaCalor] = useState();
     const [graficaROC, setGraficaROC] = useState();
-    const [exactitudPromedio, setExactitudPromedio] = useState();
+    const [graficaAD, setGraficaAD] = useState();
+    const [exactitudPromedioAD, setExactitudPromedioAD] = useState();
+    const [exactitudPromedioBA, setExactitudPromedioBA] = useState();
     const [columnasDataSet, setColumnasDataSet] = useState([]);
     const [tamMuestra, setTamMuestra] = useState(0);
+    const [profundidadMaxima, setProfundidadMaxima] = useState(0);
     const [variableClase, setVariableClase] = useState(
         "Seleccione una variable"
     );
@@ -82,11 +87,13 @@ export const ArbolesBosques = () => {
         seleccionCaracteristicas.length > 0 &&
         tamMuestra >= 0.15 &&
         tamMuestra <= 0.3 &&
+        profundidadMaxima > 0 &&
+        profundidadMaxima <= 50 &&
         variableClase !== "Seleccione una variable" &&
         validateFileExt(filenameLabel);
+
     const handleFileAnalisys = async () => {
         setIsLoading(true);
-
         const formData = new FormData(form.current);
         const res = await fetch(API + "analisis-datos", {
             method: "POST",
@@ -117,32 +124,48 @@ export const ArbolesBosques = () => {
                 seleccionCaracteristicas
             );
             formData.append("variableClase", variableClaseValor);
-            const res = await fetch(API + "clasificacion", {
+            const res = await fetch(API + "arboles-bosques", {
                 method: "POST",
                 body: formData,
             });
             const infoRes = await res.json();
-            // console.log(infoRes);
+
             if (!("error" in infoRes)) {
-                const csvFile = infoRes["csv"];
-                const parsedCsv = Papa.parse(csvFile, { header: true });
-                var parsedData = parsedCsv?.data;
-                const image_data = infoRes["graficaROC"];
-                const exactitud = infoRes["exactitudPromedio"];
-                var tableHeaders = [];
-                var arrayHead = Object.keys(parsedData[0]);
-                for (var i in arrayHead) {
-                    tableHeaders.push(arrayHead[i]);
-                }
+                const matrizClasificacionArbolDescision =
+                    infoRes["matrizClasificacionArbolDescision"];
+                const matrizClasificacionBosqueAleatorio =
+                    infoRes["matrizClasificacionBosqueAleatorio"];
+                const parsedMCAD = Papa.parse(
+                    matrizClasificacionArbolDescision,
+                    { header: true }
+                );
+                const parsedMCBA = Papa.parse(
+                    matrizClasificacionBosqueAleatorio,
+                    { header: true }
+                );
+                var parsedDataMCAD = parsedMCAD?.data;
+                var parsedDataMCBA = parsedMCBA?.data;
+                const image_data_graficaAD = infoRes["graficaArbolDesc"];
+                const image_data_graficaROC = infoRes["graficaROC"];
+                const exactitudPromAD = infoRes["exactitudPromedioArbolDesc"];
+                const exactitudPromBA =
+                    infoRes["exactitudPromedioBosqueAleatorio"];
                 // Se elimina el indice 2 del array ya que se genera vacio y da problemas al crear la tabla
-                parsedData.splice(2, 1);
-                console.log(tableHeaders);
-                console.log(parsedData);
-                setCsvData(csvFile);
-                setDataTable(parsedData);
+                parsedDataMCAD.splice(2, 1);
+                parsedDataMCBA.splice(2, 1);
+                //             const [dataTableAD, setDataTableAD] = useState([]);
+                //       const [csvDataAD, setCsvDataAD] = useState("");
+                // const [dataTableBA, setDataTableBA] = useState([]);
+                // const [csvDataBA, setCsvDataBA] = useState("");
+                setCsvDataAD(matrizClasificacionArbolDescision);
+                setDataTableAD(parsedDataMCAD);
+                setCsvDataBA(matrizClasificacionBosqueAleatorio);
+                setDataTableBA(parsedDataMCBA);
                 // setHeaderTable(tableHeaders);
-                setExactitudPromedio(exactitud);
-                setGraficaROC(image_data);
+                setExactitudPromedioAD(exactitudPromAD);
+                setExactitudPromedioBA(exactitudPromBA);
+                setGraficaROC(image_data_graficaROC);
+                setGraficaAD(image_data_graficaAD);
                 setSalida(true);
             } else {
                 setTextoError(infoRes["error"]);
@@ -166,8 +189,10 @@ export const ArbolesBosques = () => {
                 <div>
                     <p>
                         En esta sección de la app puedes obtener la matriz de
-                        clasificacion logística de un dataset que ingreses en
-                        CSV.
+                        clasificación por medio de arboles de decision y bosques
+                        aleatorios de un dataset que ingreses en CSV. Esto con
+                        el fin de que puedas comparar los resultados de ambos
+                        algoritmos.
                         <br />
                         <strong>Nota:</strong> El dataset debe tener una
                         variable de clase binaria (Con dos clases).
@@ -261,7 +286,6 @@ export const ArbolesBosques = () => {
                             {mapaCalor && (
                                 <Grid xs={12}>
                                     <Input
-                                        helperText=""
                                         type="number"
                                         step={0.01}
                                         min={0.15}
@@ -271,7 +295,25 @@ export const ArbolesBosques = () => {
                                             setTamMuestra(e.target.value)
                                         }
                                         label="Tamaño de la muestra"
-                                        placeholder="Ej. 0.2"
+                                        placeholder="0.15 - 0.3"
+                                    />
+                                </Grid>
+                            )}
+                            {mapaCalor && (
+                                <Grid xs={12}>
+                                    <Input
+                                        helperText="En el bosque aleatorio, se utilizara la mitad de la profundidad ingresada"
+                                        type="number"
+                                        step={1}
+                                        min={1}
+                                        max={50}
+                                        css={{ pb: "$10" }}
+                                        name="profundidadMaxima"
+                                        onChange={(e) =>
+                                            setProfundidadMaxima(e.target.value)
+                                        }
+                                        label="Profundidad máxima del arbol binario"
+                                        placeholder="Ej. 14 (máximo 50)"
                                     />
                                 </Grid>
                             )}
@@ -318,12 +360,17 @@ export const ArbolesBosques = () => {
                         </div>
                     )}
                 </Grid>
+
+                {/* Arbol de decision */}
                 <Grid xs={12} sm={8} md={6}>
                     {salida && (
                         <div className="resultados-container">
                             <Grid.Container>
                                 <Grid xs={8}>
-                                    <Text h3>Matriz de Clasificacion:</Text>
+                                    <Text h3>
+                                        Matriz de Clasificacion del Arbol de
+                                        decision:
+                                    </Text>
                                 </Grid>
                                 <Grid
                                     xs={4}
@@ -334,10 +381,10 @@ export const ArbolesBosques = () => {
                                     }}
                                 >
                                     <CSVLink
-                                        data={csvData}
+                                        data={csvDataAD}
                                         target="_blank"
                                         filename={
-                                            "matrizclasificacion_logistica" +
+                                            "matrizclasificacion_arbolDecision" +
                                             filenameLabel.split(".")[0] +
                                             ".csv"
                                         }
@@ -364,7 +411,7 @@ export const ArbolesBosques = () => {
                                     <Table.Column key={"1"}>1</Table.Column>
                                 </Table.Header>
                                 <Table.Body>
-                                    {dataTable.map((item, index) => {
+                                    {dataTableAD.map((item, index) => {
                                         console.log(item[0]);
                                         return (
                                             <Table.Row key={index}>
@@ -384,7 +431,102 @@ export const ArbolesBosques = () => {
                             </Table>
                             <Text css={{ mt: "$10" }}>
                                 Se obtuvo una exactitud promedio de:{" "}
-                                <strong> {exactitudPromedio} </strong>
+                                <strong> {exactitudPromedioAD} </strong>
+                            </Text>
+                        </div>
+                    )}
+                </Grid>
+                {graficaAD && (
+                    <Grid xs={12} sm={3} md={6} css={{ mb: "$15" }}>
+                        <Card
+                            className="card-resultados"
+                            css={{
+                                overflow: "scroll",
+                            }}
+                        >
+                            <Card.Header>
+                                <Text h3>Gráfica del árbol generado:</Text>
+                            </Card.Header>
+                            <Card.Body css={{ pt: "0" }}>
+                                <img
+                                    src={`data:image/png;base64,${graficaAD}`}
+                                    alt="Mapa de calor de los datos"
+                                />
+                            </Card.Body>
+                        </Card>
+                    </Grid>
+                )}
+                {/* Bosque aleatorio de decision */}
+                <Grid xs={12} sm={8} md={6}>
+                    {salida && (
+                        <div className="resultados-container">
+                            <Grid.Container>
+                                <Grid xs={8}>
+                                    <Text h3>
+                                        Matriz de Clasificacion del Bosque
+                                        Aleatorio:
+                                    </Text>
+                                </Grid>
+                                <Grid
+                                    xs={4}
+                                    className="boton-csv-asos"
+                                    css={{
+                                        display: "flex",
+                                        justifyContent: "center",
+                                    }}
+                                >
+                                    <CSVLink
+                                        data={csvDataBA}
+                                        target="_blank"
+                                        filename={
+                                            "matrizclasificacion_arbolDecision" +
+                                            filenameLabel.split(".")[0] +
+                                            ".csv"
+                                        }
+                                    >
+                                        Descargar CSV{" "}
+                                        <box-icon
+                                            type="solid"
+                                            name="download"
+                                            color={theme.colors.text.value}
+                                        ></box-icon>
+                                    </CSVLink>
+                                </Grid>
+                            </Grid.Container>
+
+                            <Table
+                                compact
+                                aria-label="Tabla generada con los datos del bosque aleatorio"
+                            >
+                                <Table.Header>
+                                    <Table.Column key={"Reales"}>
+                                        Reales
+                                    </Table.Column>
+                                    <Table.Column key={"0"}>0</Table.Column>
+                                    <Table.Column key={"1"}>1</Table.Column>
+                                </Table.Header>
+                                <Table.Body>
+                                    {dataTableBA.map((item, index) => {
+                                        console.log(item[0]);
+                                        return (
+                                            <Table.Row key={index}>
+                                                <Table.Cell>
+                                                    {item["Reales"]}
+                                                </Table.Cell>
+                                                <Table.Cell>
+                                                    {item["0"]}
+                                                </Table.Cell>
+                                                <Table.Cell>
+                                                    {item["1"]}
+                                                </Table.Cell>
+                                            </Table.Row>
+                                        );
+                                    })}
+                                </Table.Body>
+                            </Table>
+                            <Text css={{ mt: "$10" }}>
+                                Se obtuvo una exactitud promedio de:{" "}
+                                <strong> {exactitudPromedioBA} </strong>
                             </Text>
                         </div>
                     )}
@@ -398,7 +540,7 @@ export const ArbolesBosques = () => {
                             }}
                         >
                             <Card.Header>
-                                <Text h3>Gráfica ROC:</Text>
+                                <Text h3>Gráfica ROC comparativa:</Text>
                             </Card.Header>
                             <Card.Body css={{ pt: "0" }}>
                                 <img
