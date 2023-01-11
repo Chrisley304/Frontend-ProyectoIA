@@ -122,7 +122,7 @@ function App() {
                             path="/"
                             element={
                                 isLogged ? (
-                                    <Navigate to="/dashboard" />
+                                    <Navigate to="/inicio" />
                                 ) : (
                                     <Navigate to="/login" />
                                 )
