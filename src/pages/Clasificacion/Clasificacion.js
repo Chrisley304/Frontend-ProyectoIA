@@ -14,7 +14,6 @@ import "./Clasificacion.css";
 import { useRef } from "react";
 import Papa from "papaparse";
 import { ModalError } from "../../components/ModalError/ModalError";
-import { TablaAsociacion } from "../../components/TablaAsociacion/TablaAsociacion";
 import { LoadingModal } from "../../components/LoadingModal/LoadingModal";
 import archivoPrueba from "../../assets/csvPrueba/Hipoteca.csv";
 import { CSVLink } from "react-csv";
@@ -31,7 +30,7 @@ export const Clasificacion = () => {
     const [errorRespuesta, setErrorRespuesta] = useState(false);
     const [textoError, setTextoError] = useState("");
     const [dataTable, setDataTable] = useState([]);
-    const [headerTable, setHeaderTable] = useState([]);
+    // const [headerTable, setHeaderTable] = useState([]);
     const [csvData, setCsvData] = useState("");
     const [mapaCalor, setMapaCalor] = useState();
     const [graficaROC, setGraficaROC] = useState();
@@ -141,7 +140,7 @@ export const Clasificacion = () => {
                 console.log(parsedData);
                 setCsvData(csvFile);
                 setDataTable(parsedData);
-                setHeaderTable(tableHeaders);
+                // setHeaderTable(tableHeaders);
                 setExactitudPromedio(exactitud);
                 setGraficaROC(image_data);
                 setSalida(true);
@@ -382,17 +381,11 @@ export const Clasificacion = () => {
                                         );
                                     })}
                                 </Table.Body>
-
-                                {/* <Table.Pagination
-                                    shadow
-                                    noMargin
-                                    align="start"
-                                    rowsPerPage={7}
-                                    onPageChange={(page) =>
-                                        console.log({ page })
-                                    }
-                                /> */}
                             </Table>
+                            <Text css={{ mt: "$10" }}>
+                                Se obtuvo una exactitud promedio de:{" "}
+                                <strong> {exactitudPromedio} </strong>
+                            </Text>
                         </div>
                     )}
                 </Grid>
