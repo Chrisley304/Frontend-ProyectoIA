@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, Text, Checkbox } from "@nextui-org/react";
 
-export default function SeleccionCaracteristicas({
+export default function SeleccionCaracteristicasClasificacion({
     columnasDataSet,
     mapaCalor,
     setSeleccionCaracteristicas,
+    variableClase,
 }) {
     return (
         <Card
@@ -28,11 +29,17 @@ export default function SeleccionCaracteristicas({
                     label="Selecciona las variables a utilizar"
                     onChange={setSeleccionCaracteristicas}
                     css={{ pt: "$10", pb: "$5" }}
-                    defaultValue={columnasDataSet}
                 >
                     {columnasDataSet.map((columnName, _) => {
                         return (
-                            <Checkbox size="sm" value={columnName}>
+                            <Checkbox
+                                size="sm"
+                                isDisabled={
+                                    columnName === variableClase ||
+                                    variableClase === ""
+                                }
+                                value={columnName}
+                            >
                                 {columnName}
                             </Checkbox>
                         );
