@@ -6,8 +6,8 @@ import {
     Grid,
     useTheme,
     Text,
-    Radio,
     Card,
+    Dropdown,
 } from "@nextui-org/react";
 import "./Clasificacion.css";
 import { useRef } from "react";
@@ -17,7 +17,7 @@ import { TablaAsociacion } from "../../components/TablaAsociacion/TablaAsociacio
 import { LoadingModal } from "../../components/LoadingModal/LoadingModal";
 import archivoPrueba from "../../assets/csvPrueba/Hipoteca.csv";
 import { CSVLink } from "react-csv";
-import SeleccionCaracteristicas from "../../components/SeleccionCaracteristicas/SeleccionCaracteristicas";
+import SeleccionCaracteristicasClasificacion from "../../components/SeleccionCaracteristicasClasificacion/SeleccionCaracteristicasClasificacion";
 
 // Para utilizar el LOCALHOST:
 const API = process.env.REACT_APP_LOCALHOST;
@@ -27,23 +27,22 @@ const API = process.env.REACT_APP_LOCALHOST;
 export const Clasificacion = () => {
     // Para el label del file
     const [filenameLabel, setFilenameLabel] = useState("");
-    const [maxClusters, setMaxClusters] = useState();
-    const [minClusters, setMinClusters] = useState();
-    const [metricaSeleccionada, setMetricaSeleccionada] = useState();
-    const [tipoClustering, setTipoClustering] = useState();
     const [errorRespuesta, setErrorRespuesta] = useState(false);
     const [textoError, setTextoError] = useState("");
     const [dataTable, setDataTable] = useState();
     const [headerTable, setHeaderTable] = useState();
     const [csvData, setCsvData] = useState("");
     const [mapaCalor, setMapaCalor] = useState();
-    const [graficaClusters, setGraficaClusters] = useState();
+    const [graficaROC, setGraficaROC] = useState();
+    const [exactitudPromedio, setExactitudPromedio] = useState();
     const [columnasDataSet, setColumnasDataSet] = useState([]);
+    const [tamMuestra, setTamMuestra] = useState(0);
+    const [variableClase, setVariableClase] = useState(
+        "Seleccione una variable"
+    );
     const [seleccionCaracteristicas, setSeleccionCaracteristicas] = useState(
         []
     );
-    // const [Xtabla, setXtabla] = useState();
-    // const [Ytabla, setYtabla] = useState();
     const [isLoading, setIsLoading] = useState(false);
     const [salida, setSalida] = useState(false);
     const { theme } = useTheme();
@@ -51,9 +50,7 @@ export const Clasificacion = () => {
     const inputFile = useRef(null);
     // Reference for the form
     const form = useRef(null);
-
-    // const asociacionesChart = new Chart(ctx);
-
+    const [variableClaseValor] = variableClase;
     const selectFile = () => {
         inputFile.current.click();
     };
@@ -82,18 +79,11 @@ export const Clasificacion = () => {
     }, [filenameLabel]);
 
     const isFormValid =
-        tipoClustering === "particional"
-            ? tipoClustering &&
-              seleccionCaracteristicas.length > 0 &&
-              minClusters > 0 &&
-              maxClusters > 0 &&
-              validateFileExt(filenameLabel)
-            : tipoClustering &&
-              seleccionCaracteristicas.length > 0 &&
-              metricaSeleccionada &&
-              maxClusters > 0 &&
-              validateFileExt(filenameLabel);
-
+        seleccionCaracteristicas.length > 0 &&
+        tamMuestra >= 0.15 &&
+        tamMuestra <= 0.3 &&
+        variableClase !== "Seleccione una variable" &&
+        validateFileExt(filenameLabel);
     const handleFileAnalisys = async () => {
         setIsLoading(true);
 
@@ -126,18 +116,19 @@ export const Clasificacion = () => {
                 "seleccionCaracteristicas",
                 seleccionCaracteristicas
             );
-            const res = await fetch(API + "clustering/" + tipoClustering, {
+            formData.append("variableClase", variableClaseValor);
+            const res = await fetch(API + "clasificacion", {
                 method: "POST",
                 body: formData,
             });
             const infoRes = await res.json();
-            // console.log(infoRes);
+            console.log(infoRes);
             if (!("error" in infoRes)) {
                 const csvFile = infoRes["csv"];
-                console.log(infoRes);
                 const parsedCsv = Papa.parse(csvFile, { header: true });
                 const parsedData = parsedCsv?.data;
-                const image_data = infoRes["grafica"];
+                const image_data = infoRes["graficaROC"];
+                const exactitud = infoRes["exactitudPromedio"];
                 var tableHeaders = [];
                 var arrayHead = Object.keys(parsedData[0]);
                 for (var i in arrayHead) {
@@ -149,7 +140,8 @@ export const Clasificacion = () => {
                 setCsvData(csvFile);
                 setDataTable(parsedData);
                 setHeaderTable(tableHeaders);
-                setGraficaClusters(image_data);
+                setExactitudPromedio(exactitud);
+                setGraficaROC(image_data);
                 setSalida(true);
             } else {
                 setTextoError(infoRes["error"]);
@@ -222,80 +214,60 @@ export const Clasificacion = () => {
                                 </Button>
                             </Grid>
                             {mapaCalor && (
-                                <Grid xs={12}>
-                                    <Radio.Group
-                                        label="Tipo de clustering"
-                                        value={tipoClustering}
-                                        onChange={setTipoClustering}
-                                    >
-                                        <Radio size="sm" value="jerarquico">
-                                            Método Jerarquico
-                                        </Radio>
-                                        <Radio size="sm" value="particional">
-                                            Método Particional
-                                        </Radio>
-                                    </Radio.Group>
-                                </Grid>
-                            )}
-                            {mapaCalor &&
-                                tipoClustering &&
-                                tipoClustering !== "particional" && (
-                                    <Grid xs={12}>
-                                        <Radio.Group
-                                            label="Métrica a utilizar"
-                                            value={metricaSeleccionada}
-                                            onChange={setMetricaSeleccionada}
-                                            name="tipoDistancia"
-                                            isDisabled={
-                                                tipoClustering === "particional"
-                                            }
-                                        >
-                                            <Radio size="sm" value="euclidean">
-                                                Métrica Euclidiana
-                                            </Radio>
-                                            <Radio size="sm" value="chebyshev">
-                                                Métrica Chebyshev
-                                            </Radio>
-                                            <Radio size="sm" value="cityblock">
-                                                Métrica de Manhattan (City
-                                                block)
-                                            </Radio>
-                                        </Radio.Group>
+                                <>
+                                    <Grid xs={12} css={{ mt: "$10" }}>
+                                        <Text>
+                                            Selecciona la variable clase:
+                                        </Text>
                                     </Grid>
-                                )}
-                            {mapaCalor && tipoClustering === "particional" && (
-                                <Grid xs={12}>
-                                    <Input
-                                        helperText=""
-                                        type="number"
-                                        step={1}
-                                        min={0}
-                                        name="minClusters"
-                                        onChange={(e) =>
-                                            setMinClusters(e.target.value)
-                                        }
-                                        label="Numero de mínimo de clusters"
-                                        placeholder="Ej. 2"
-                                    />
-                                </Grid>
+                                    <Grid xs={12}>
+                                        <Dropdown>
+                                            <Dropdown.Button
+                                                flat
+                                                color="secondary"
+                                            >
+                                                {variableClase}
+                                            </Dropdown.Button>
+                                            <Dropdown.Menu
+                                                aria-label="Single selection actions"
+                                                color="secondary"
+                                                disallowEmptySelection
+                                                selectionMode="single"
+                                                selectedKeys={variableClase}
+                                                onSelectionChange={
+                                                    setVariableClase
+                                                }
+                                            >
+                                                {columnasDataSet.map(
+                                                    (columna, _) => {
+                                                        return (
+                                                            <Dropdown.Item
+                                                                key={columna}
+                                                            >
+                                                                {columna}
+                                                            </Dropdown.Item>
+                                                        );
+                                                    }
+                                                )}
+                                            </Dropdown.Menu>
+                                        </Dropdown>
+                                    </Grid>
+                                </>
                             )}
-                            {mapaCalor && tipoClustering && (
+                            {mapaCalor && (
                                 <Grid xs={12}>
                                     <Input
                                         helperText=""
                                         type="number"
-                                        step={1}
-                                        min={0}
-                                        name="maxClusters"
+                                        step={0.01}
+                                        min={0.15}
+                                        max={0.3}
+                                        name="tamanioMuestra"
                                         onChange={(e) =>
-                                            setMaxClusters(e.target.value)
+                                            setTamMuestra(e.target.value)
                                         }
-                                        label={
-                                            tipoClustering === "particional"
-                                                ? "Numero de máximo de clusters"
-                                                : "Numero de clusters"
-                                        }
-                                        placeholder="Ej. 4"
+                                        label="Tamaño de la muestra"
+                                        placeholder="Ej. 0.2"
                                     />
                                 </Grid>
                             )}
@@ -309,7 +281,7 @@ export const Clasificacion = () => {
                                         type="submit"
                                         value="Submit"
                                     >
-                                        Obtener reglas de asociacion
+                                        Obtener clasificación logística
                                     </Button>
                                 </Grid>
                             )}
@@ -324,21 +296,26 @@ export const Clasificacion = () => {
                         textoError={textoError}
                     />
                 )}
-                <Grid xs={12} sm={8} md={6}>
+                <Grid xs={12} sm={8} md={6} css={{ pb: "$20" }}>
                     {mapaCalor && (
                         <div className="resultados-container">
-                            <SeleccionCaracteristicas
+                            <SeleccionCaracteristicasClasificacion
                                 columnasDataSet={columnasDataSet}
                                 mapaCalor={mapaCalor}
                                 setSeleccionCaracteristicas={
                                     setSeleccionCaracteristicas
+                                }
+                                variableClase={
+                                    variableClase === "Seleccione una variable"
+                                        ? ""
+                                        : variableClaseValor
                                 }
                             />
                         </div>
                     )}
                 </Grid>
                 <Grid xs={12} sm={8} md={6}>
-                    {salida > 0 && (
+                    {salida && (
                         <div className="resultados-container">
                             <Grid.Container>
                                 <Grid xs={8}>
@@ -351,24 +328,16 @@ export const Clasificacion = () => {
                                     className="boton-csv-asos"
                                     css={{
                                         display: "flex",
-                                        justifyContent: "flex-end",
+                                        justifyContent: "center",
                                     }}
                                 >
                                     <CSVLink
                                         data={csvData}
                                         target="_blank"
                                         filename={
-                                            "clustering_" +
-                                                +tipoClustering +
-                                                "_" +
-                                                tipoClustering ===
-                                            "particional"
-                                                ? filenameLabel.split(".")[0] +
-                                                  ".csv"
-                                                : metricaSeleccionada +
-                                                  "_" +
-                                                  filenameLabel.split(".")[0] +
-                                                  ".csv"
+                                            "clasificacion_logistica" +
+                                            filenameLabel.split(".")[0] +
+                                            ".csv"
                                         }
                                     >
                                         Descargar CSV{" "}
@@ -380,14 +349,14 @@ export const Clasificacion = () => {
                                     </CSVLink>
                                 </Grid>
                             </Grid.Container>
-                            <TablaAsociacion
+                            {/* <TablaAsociacion
                                 data={dataTable}
                                 cols={headerTable}
-                            />
+                            /> */}
                         </div>
                     )}
                 </Grid>
-                {graficaClusters && (
+                {graficaROC && (
                     <Grid xs={12} sm={3} md={6}>
                         <Card
                             className="card-resultados"
@@ -400,7 +369,7 @@ export const Clasificacion = () => {
                             </Card.Header>
                             <Card.Body css={{ pt: "0" }}>
                                 <img
-                                    src={`data:image/png;base64,${graficaClusters}`}
+                                    src={`data:image/png;base64,${graficaROC}`}
                                     alt="Mapa de calor de los datos"
                                 />
                             </Card.Body>
