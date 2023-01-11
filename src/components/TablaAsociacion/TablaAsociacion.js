@@ -1,8 +1,7 @@
 import React from "react";
 import { Table } from "@nextui-org/react";
 
-export const TablaAsociacion = ({data,cols}) =>{
-
+export const TablaAsociacion = ({ data, cols }) => {
     return (
         <Table
             compact

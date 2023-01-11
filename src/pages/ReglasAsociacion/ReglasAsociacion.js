@@ -136,8 +136,8 @@ export const ReglasAsociacion = () => {
                         ingreses en CSV, este NO debe de contener encabezados.
                     </p>
                     <p>
-                        Si no tienes un dataset para utilizar el agoritmo, obten
-                        uno dando click <a href={archivoPrueba}>aquí</a>.
+                        Si no tienes un dataset para utilizar el algoritmo,
+                        obtén uno dando click <a href={archivoPrueba}>aquí</a>.
                     </p>
                 </div>
             }
@@ -258,10 +258,17 @@ export const ReglasAsociacion = () => {
                             {respuestaNReglas > 0 && (
                                 <>
                                     <Grid.Container>
-                                        <Grid xs={10}>
+                                        <Grid xs={8}>
                                             <Text h3>Reglas generadas:</Text>
                                         </Grid>
-                                        <Grid xs={2} className="boton-csv-asos">
+                                        <Grid
+                                            xs={4}
+                                            className="boton-csv-asos"
+                                            css={{
+                                                display: "flex",
+                                                justifyContent: "center",
+                                            }}
+                                        >
                                             <CSVLink
                                                 data={csvData}
                                                 target="_blank"

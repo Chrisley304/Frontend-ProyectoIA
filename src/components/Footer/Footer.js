@@ -12,7 +12,11 @@ export const Footer = () => {
                     : "footer-container"
             }
         >
-            Made with ❤️ by <a href="https://chrisley.dev/" target="_blank" rel="noreferrer">Christian Leyva</a> | Last Update: Dec 2022
+            Made with ❤️ by{" "}
+            <a href="https://chrisley.dev/" target="_blank" rel="noreferrer">
+                Christian Leyva
+            </a>{" "}
+            | Last Update: Jan 2023
         </footer>
     );
 };
