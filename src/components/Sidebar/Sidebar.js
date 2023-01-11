@@ -85,7 +85,7 @@ export const Sidebar = () => {
                     </li>
                     <li>
                         <NavbarItem
-                            link="/arboles"
+                            link="/arboles-bosques"
                             label="Árboles y Bosques"
                             icon="tree"
                             iconType="solid"

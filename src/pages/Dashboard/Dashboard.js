@@ -74,7 +74,7 @@ export const Dashboard = () => {
                         titulo="¡Prueba el algoritmo de arboles y bosques aleatorios!"
                         categoria="Algoritmo"
                         imagen={bosqueImg}
-                        linkPagina="/arboles"
+                        linkPagina="/arboles-bosques"
                     />
                 </Grid>
                 <Grid xs={12}>

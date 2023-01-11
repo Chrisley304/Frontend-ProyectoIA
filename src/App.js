@@ -17,6 +17,7 @@ import { PrivateRoute } from "./components/PrivateRoute/PrivateRoute";
 import { getAuth } from "firebase/auth";
 import { AuthProvider, useFirebaseApp } from "reactfire";
 import { Clasificacion } from "./pages/Clasificacion/Clasificacion";
+import { ArbolesBosques } from "./pages/ArbolesBosques/ArbolesBosques";
 
 const lightTheme = createTheme({
     type: "light", // it could be "light" or "dark"
@@ -165,6 +166,14 @@ function App() {
                             element={
                                 <PrivateRoute forlogin={false}>
                                     <Clasificacion />
+                                </PrivateRoute>
+                            }
+                        />
+                        <Route
+                            path="/arboles-bosques"
+                            element={
+                                <PrivateRoute forlogin={false}>
+                                    <ArbolesBosques />
                                 </PrivateRoute>
                             }
                         />
