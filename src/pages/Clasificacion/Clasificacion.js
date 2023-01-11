@@ -21,9 +21,9 @@ import { CSVLink } from "react-csv";
 import SeleccionCaracteristicasClasificacion from "../../components/SeleccionCaracteristicasClasificacion/SeleccionCaracteristicasClasificacion";
 
 // Para utilizar el LOCALHOST:
-const API = process.env.REACT_APP_LOCALHOST;
+// const API = process.env.REACT_APP_LOCALHOST;
 // Para usar la API de Heroku:
-// const API = process.env.REACT_APP_API_URL;
+const API = process.env.REACT_APP_API_URL;
 
 export const Clasificacion = () => {
     // Para el label del file
