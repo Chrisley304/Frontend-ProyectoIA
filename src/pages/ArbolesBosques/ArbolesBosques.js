@@ -184,7 +184,7 @@ export const ArbolesBosques = () => {
 
     return (
         <Page
-            titulo="Arboles y Bosques Aleatorios"
+            titulo="Arbol de decision y Bosque Aleatorio"
             descripcion={
                 <div>
                     <p>
