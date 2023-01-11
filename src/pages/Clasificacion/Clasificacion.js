@@ -8,6 +8,7 @@ import {
     Text,
     Card,
     Dropdown,
+    Table,
 } from "@nextui-org/react";
 import "./Clasificacion.css";
 import { useRef } from "react";
@@ -29,8 +30,8 @@ export const Clasificacion = () => {
     const [filenameLabel, setFilenameLabel] = useState("");
     const [errorRespuesta, setErrorRespuesta] = useState(false);
     const [textoError, setTextoError] = useState("");
-    const [dataTable, setDataTable] = useState();
-    const [headerTable, setHeaderTable] = useState();
+    const [dataTable, setDataTable] = useState([]);
+    const [headerTable, setHeaderTable] = useState([]);
     const [csvData, setCsvData] = useState("");
     const [mapaCalor, setMapaCalor] = useState();
     const [graficaROC, setGraficaROC] = useState();
@@ -122,21 +123,22 @@ export const Clasificacion = () => {
                 body: formData,
             });
             const infoRes = await res.json();
-            console.log(infoRes);
+            // console.log(infoRes);
             if (!("error" in infoRes)) {
                 const csvFile = infoRes["csv"];
                 const parsedCsv = Papa.parse(csvFile, { header: true });
-                const parsedData = parsedCsv?.data;
+                var parsedData = parsedCsv?.data;
                 const image_data = infoRes["graficaROC"];
                 const exactitud = infoRes["exactitudPromedio"];
                 var tableHeaders = [];
                 var arrayHead = Object.keys(parsedData[0]);
                 for (var i in arrayHead) {
-                    tableHeaders.push({
-                        key: arrayHead[i],
-                        label: arrayHead[i],
-                    });
+                    tableHeaders.push(arrayHead[i]);
                 }
+                // Se elimina el indice 2 del array ya que se genera vacio y da problemas al crear la tabla
+                parsedData.splice(2, 1);
+                console.log(tableHeaders);
+                console.log(parsedData);
                 setCsvData(csvFile);
                 setDataTable(parsedData);
                 setHeaderTable(tableHeaders);
@@ -164,9 +166,12 @@ export const Clasificacion = () => {
             descripcion={
                 <div>
                     <p>
-                        En esta sección de la app puedes obtener grupos de
-                        clusters entre los elementos de un dataset que ingreses
-                        en CSV.
+                        En esta sección de la app puedes obtener la matriz de
+                        clasificacion logística de un dataset que ingreses en
+                        CSV.
+                        <br />
+                        <strong>Nota:</strong> El dataset debe tener una
+                        variable de clase binaria (Con dos clases).
                     </p>
                     <p>
                         Si no tienes un dataset para utilizar el algoritmo,
@@ -319,9 +324,7 @@ export const Clasificacion = () => {
                         <div className="resultados-container">
                             <Grid.Container>
                                 <Grid xs={8}>
-                                    <Text h3>
-                                        Datos etiquetados con clusters:
-                                    </Text>
+                                    <Text h3>Matriz de Clasificacion:</Text>
                                 </Grid>
                                 <Grid
                                     xs={4}
@@ -335,7 +338,7 @@ export const Clasificacion = () => {
                                         data={csvData}
                                         target="_blank"
                                         filename={
-                                            "clasificacion_logistica" +
+                                            "matrizclasificacion_logistica" +
                                             filenameLabel.split(".")[0] +
                                             ".csv"
                                         }
@@ -349,10 +352,47 @@ export const Clasificacion = () => {
                                     </CSVLink>
                                 </Grid>
                             </Grid.Container>
-                            {/* <TablaAsociacion
-                                data={dataTable}
-                                cols={headerTable}
-                            /> */}
+
+                            <Table
+                                compact
+                                aria-label="Tabla generada con los datos de la clasificación logística"
+                            >
+                                <Table.Header>
+                                    <Table.Column key={"Reales"}>
+                                        Reales
+                                    </Table.Column>
+                                    <Table.Column key={"0"}>0</Table.Column>
+                                    <Table.Column key={"1"}>1</Table.Column>
+                                </Table.Header>
+                                <Table.Body>
+                                    {dataTable.map((item, index) => {
+                                        console.log(item[0]);
+                                        return (
+                                            <Table.Row key={index}>
+                                                <Table.Cell>
+                                                    {item["Reales"]}
+                                                </Table.Cell>
+                                                <Table.Cell>
+                                                    {item["0"]}
+                                                </Table.Cell>
+                                                <Table.Cell>
+                                                    {item["1"]}
+                                                </Table.Cell>
+                                            </Table.Row>
+                                        );
+                                    })}
+                                </Table.Body>
+
+                                {/* <Table.Pagination
+                                    shadow
+                                    noMargin
+                                    align="start"
+                                    rowsPerPage={7}
+                                    onPageChange={(page) =>
+                                        console.log({ page })
+                                    }
+                                /> */}
+                            </Table>
                         </div>
                     )}
                 </Grid>
@@ -365,7 +405,7 @@ export const Clasificacion = () => {
                             }}
                         >
                             <Card.Header>
-                                <Text h3>Gráfica de los clusters:</Text>
+                                <Text h3>Gráfica ROC:</Text>
                             </Card.Header>
                             <Card.Body css={{ pt: "0" }}>
                                 <img
